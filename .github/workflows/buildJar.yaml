@@ -1,0 +1,14 @@
+name: Build JAR
+on:
+  push:
+    branches: [ main ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: ./gradlew build
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ItemSzopPlugin
+          path: build/libs/ItemSzopPlugin-1.0.jar
