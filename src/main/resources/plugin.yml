@@ -1,6 +1,5 @@
-name: ItemSzop Plugin
-version: '${version}'
-main: com.github.michaljaz.itemszop.Itemszop
-api-version: 1.15
-description: Plugin do wywoływania komend na serwerze z bazy firebase
-website: https://itemszop.tk
+name: ItemszopPlugin
+version: @version@
+main: com.github.michaljaz.itemszop.Main
+api-version: 1.18
+
