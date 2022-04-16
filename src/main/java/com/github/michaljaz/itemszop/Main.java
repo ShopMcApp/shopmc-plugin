@@ -7,11 +7,21 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        getLogger().info(ChatColor.GREEN + "ENABLED MANHUNT PLUGIN!");
+        long startTime = System.currentTimeMillis();
+        getLogger().info("\n" +
+                "§6 _  _                                            \n" +
+                "§6(_)| |                                           \n" +
+                "§6 _ | |_   ___  _ __ ___   ___  ____  ___   _ __  \n" +
+                "§6| || __| / _ \\| '_ ` _ \\ / __||_  / / _ \\ | '_ \\ \n" +
+                "§6| || |_ |  __/| | | | | |\\__ \\ / / | (_) || |_) |\n" +
+                "§6|_| \\__| \\___||_| |_| |_||___//___| \\___/ | .__/ \n §2" +
+                "                          " + this.getDescription().getVersion() + "   §6| |    \n" +
+                "\n" + "§fDeveloped by " + this.getDescription().getAuthors() + " dla https://github.com/michaljaz/itemszop §a" + "\n§fPlugin został załadowany w §a" + (System.currentTimeMillis() - startTime) + "ms§7.\n§fWykryty silnik: " + Bukkit.getVersion().split("-")[1]);
+
     }
 
     @Override
     public void onDisable() {
-        getLogger().info(ChatColor.RED + "DISABLED MANHUNT PLUGIN");
+        // Plugin shutdown logic
     }
 }
