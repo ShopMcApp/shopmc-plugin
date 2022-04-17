@@ -1,6 +1,7 @@
 package com.github.michaljaz.itemszop;
 
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -15,7 +16,7 @@ public class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         long startTime = System.currentTimeMillis();
-        Bukkit.getConsoleSender().sendMessage("\n" +
+        getLogger().info("\n" +
                 "§6(_)| |                                           \n" +
                 "§6 _ | |_   ___  _ __ ___   ___  ____  ___   _ __  \n" +
                 "§6| || __| / _ \\| '_ ` _ \\ / __||_  / / _ \\ | '_ \\ \n" +
@@ -23,8 +24,17 @@ public class Main extends JavaPlugin {
                 "§6|_| \\__| \\___||_| |_| |_||___//___| \\___/ | .__/ \n §2" +
                 "                          " + this.getDescription().getVersion() + "            §6| |    \n" +
                 "\n" + "§fDeveloped by " + this.getDescription().getAuthors() + " dla https://github.com/michaljaz/itemszop §a" + "\n§fPlugin został załadowany w §a" + (System.currentTimeMillis() - startTime) + "ms§7.\n§fWykryty silnik: " + Bukkit.getVersion().split("-")[1]);
+
+        FileConfiguration config = this.getConfig();
+
+        config.addDefault("server_id", "");
+        config.addDefault("api_key", "");
+        config.options().copyDefaults(true);
+        saveConfig();
+        getLogger().info("Server ID: " + config.getString("server_id"));
+
         try {
-            this.getRequest("https://sklepmc-c7516-default-rtdb.europe-west1.firebasedatabase.app/shops.json");
+            this.getRequest("https://sklepmc-c7516-default-rtdb.europe-west1.firebasedatabase.app/shops/gitcraft.json");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -41,9 +51,7 @@ public class Main extends JavaPlugin {
 
         JSONParser parser = new JSONParser();
         JSONObject json = (JSONObject) parser.parse(response);
-        JSONObject gitcraft = (JSONObject) json.get("gitcraft");
-        String name = gitcraft.get("name").toString();
-        System.out.println(name);
+        System.out.println(json.get("name").toString());
     }
 
     @Override
