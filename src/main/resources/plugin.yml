@@ -2,4 +2,5 @@ name: ItemszopPlugin
 version: @version@
 main: com.github.michaljaz.itemszop.Main
 api-version: 1.18
-
+authors: [michaljaz, ReferTV]
+website: https://itemszop.tk
