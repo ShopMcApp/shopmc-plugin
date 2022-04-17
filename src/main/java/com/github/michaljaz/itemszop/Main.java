@@ -1,8 +1,9 @@
 package com.github.michaljaz.itemszop;
 
-import eu.dattri.jsonbodyhandler.JsonBodyHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -22,14 +23,27 @@ public class Main extends JavaPlugin {
                 "§6|_| \\__| \\___||_| |_| |_||___//___| \\___/ | .__/ \n §2" +
                 "                          " + this.getDescription().getVersion() + "            §6| |    \n" +
                 "\n" + "§fDeveloped by " + this.getDescription().getAuthors() + " dla https://github.com/michaljaz/itemszop §a" + "\n§fPlugin został załadowany w §a" + (System.currentTimeMillis() - startTime) + "ms§7.\n§fWykryty silnik: " + Bukkit.getVersion().split("-")[1]);
+        try {
+            this.getRequest("https://sklepmc-c7516-default-rtdb.europe-west1.firebasedatabase.app/shops.json");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getRequest(String uri) throws Exception{
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/"))
+                .uri(URI.create(uri))
+                .header("Accept", "application/json")
                 .build();
-        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                .thenApply(HttpResponse::body)
-                .thenAccept(System.out::println)
-                .join();
+
+        String response = client.send(request, HttpResponse.BodyHandlers.ofString()).body();
+
+        JSONParser parser = new JSONParser();
+        JSONObject json = (JSONObject) parser.parse(response);
+        JSONObject gitcraft = (JSONObject) json.get("gitcraft");
+        String name = gitcraft.get("name").toString();
+        System.out.println(name);
     }
 
     @Override
