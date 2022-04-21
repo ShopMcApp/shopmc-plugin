@@ -3,7 +3,6 @@ package com.github.michaljaz.itemszop;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -15,7 +14,9 @@ import java.net.http.HttpResponse;
 import java.util.Set;
 
 public class Main extends JavaPlugin {
-
+    private String serverId;
+    private String databaseUrl;
+    private final HttpClient client = HttpClient.newHttpClient();
     @Override
     public void onEnable() {
         long startTime = System.currentTimeMillis();
@@ -28,51 +29,60 @@ public class Main extends JavaPlugin {
                 "                          " + this.getDescription().getVersion() + "            §6| |    \n" +
                 "\n" + "§fDeveloped by " + this.getDescription().getAuthors() + " dla https://github.com/michaljaz/itemszop §a" + "\n§fPlugin został załadowany w §a" + (System.currentTimeMillis() - startTime) + "ms§7.\n§fWykryty silnik: " + Bukkit.getVersion().split("-")[1]);
 
+        //config file
         FileConfiguration config = this.getConfig();
         config.addDefault("serverId", "");
+        config.addDefault("databaseUrl", "https://sklepmc-c7516-default-rtdb.europe-west1.firebasedatabase.app");
         config.options().copyDefaults(true);
         saveConfig();
-        String serverId = config.getString("serverId");
+        serverId = config.getString("serverId");
+        databaseUrl = config.getString("databaseUrl");
+
         getLogger().info("Server ID: " + serverId);
 
-        String dbURL="https://sklepmc-c7516-default-rtdb.europe-west1.firebasedatabase.app";
+        //sync loop
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, this::syncWithFirebase, 40L, 40L);
+    }
 
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
-            try {
-                //run commands
-                HttpClient client = HttpClient.newHttpClient();
-                HttpRequest request = HttpRequest.newBuilder()
-                        .uri(URI.create(dbURL + "/servers/" + serverId + "/commands.json"))
-                        .header("Accept", "application/json")
-                        .build();
-                String response = client.send(request, HttpResponse.BodyHandlers.ofString()).body();
-                JSONParser parser = new JSONParser();
-                JSONObject json = (JSONObject) parser.parse(response);
-                if(json!=null){
-                    Set keys=json.keySet();
-                    keys.forEach((e) -> {
-                        String command=json.get(e.toString()).toString();
-                        getServer().dispatchCommand(getServer().getConsoleSender(),command);
-                        //remove commands
-                        try {
-                            client.send(HttpRequest.newBuilder()
-                                    .uri(URI.create(dbURL + "/servers/" + serverId + "/commands/"+e+".json"))
-                                    .DELETE()
-                                    .build(), HttpResponse.BodyHandlers.ofString()).body();
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
-                        } catch (InterruptedException ex) {
-                            ex.printStackTrace();
-                        }
-                        System.out.println(command);
-                    });
-                }
+    private void syncWithFirebase(){
+        try {
+            JSONObject commands = getCommands();
+            if(commands!=null){
+                Set<?> keys = commands.keySet();
+                keys.forEach((key) -> {
+                    String commandId = key.toString();
+                    String command = commands.get(key.toString()).toString();
+                    System.out.println(command);
 
-            } catch (Exception e) {
-                e.printStackTrace();
+                    getServer().dispatchCommand(getServer().getConsoleSender(), command);
+                    deleteCommand(commandId);
+                });
             }
-        }, 40L, 40L);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
+    private JSONObject getCommands() throws Exception{
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(databaseUrl + "/servers/" + serverId + "/commands.json"))
+                .header("Accept", "application/json")
+                .build();
+        String response = client.send(request, HttpResponse.BodyHandlers.ofString()).body();
+        JSONParser parser = new JSONParser();
+        return (JSONObject) parser.parse(response);
+    }
+
+    private void deleteCommand(String commandId){
+        try{
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(databaseUrl + "/servers/" + serverId + "/commands/" + commandId + ".json"))
+                    .DELETE()
+                    .build();
+            client.send(request, HttpResponse.BodyHandlers.ofString()).body();
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
