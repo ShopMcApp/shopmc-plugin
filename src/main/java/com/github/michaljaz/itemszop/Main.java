@@ -27,14 +27,16 @@ public class Main extends JavaPlugin {
 
         FileConfiguration config = this.getConfig();
 
-        config.addDefault("server_id", "");
-        config.addDefault("api_key", "");
+        config.addDefault("serverId", "");
         config.options().copyDefaults(true);
         saveConfig();
-        getLogger().info("Server ID: " + config.getString("server_id"));
+
+        String serverId=config.getString("serverId");
+
+        getLogger().info("Server ID: " + serverId);
 
         try {
-            this.getRequest("https://sklepmc-c7516-default-rtdb.europe-west1.firebasedatabase.app/shops/gitcraft.json");
+            this.getRequest("https://sklepmc-c7516-default-rtdb.europe-west1.firebasedatabase.app/servers/"+serverId+"/commands.json");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -49,9 +51,9 @@ public class Main extends JavaPlugin {
 
         String response = client.send(request, HttpResponse.BodyHandlers.ofString()).body();
 
-        JSONParser parser = new JSONParser();
-        JSONObject json = (JSONObject) parser.parse(response);
-        System.out.println(json.get("name").toString());
+//        JSONParser parser = new JSONParser();
+//        String json = (String) parser.parse(response);
+        System.out.println(response);
     }
 
     @Override
