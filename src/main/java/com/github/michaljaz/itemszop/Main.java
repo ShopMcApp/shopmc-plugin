@@ -41,7 +41,7 @@ public class Main extends JavaPlugin {
         getLogger().info("Server ID: " + serverId);
 
         //sync loop
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, this::syncWithFirebase, 40L, 40L);
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, this::syncWithFirebase, 400L, 400L);
     }
 
     private void syncWithFirebase(){
