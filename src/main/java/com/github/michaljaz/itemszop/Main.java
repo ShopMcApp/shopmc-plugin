@@ -3,20 +3,12 @@ package com.github.michaljaz.itemszop;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-
-import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.util.Set;
 
 public class Main extends JavaPlugin {
-    private String serverId;
-    private String databaseUrl;
-    private final HttpClient client = HttpClient.newHttpClient();
+    String serverId;
+    String databaseUrl;
+    FirebaseSync sync;
+
     @Override
     public void onEnable() {
         long startTime = System.currentTimeMillis();
@@ -39,51 +31,11 @@ public class Main extends JavaPlugin {
         databaseUrl = config.getString("databaseUrl");
 
         getLogger().info("Server ID: " + serverId);
-
-        //sync loop
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, this::syncWithFirebase, 400L, 400L);
+        sync = new FirebaseSync(this);
+        this.getCommand("itemszop_update").setExecutor(new ItemszopUpdate(this));
     }
 
-    private void syncWithFirebase(){
-        try {
-            JSONObject commands = getCommands();
-            if(commands!=null){
-                Set<?> keys = commands.keySet();
-                keys.forEach((key) -> {
-                    String commandId = key.toString();
-                    String command = commands.get(key.toString()).toString();
-                    System.out.println(command);
 
-                    getServer().dispatchCommand(getServer().getConsoleSender(), command);
-                    deleteCommand(commandId);
-                });
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private JSONObject getCommands() throws Exception{
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(databaseUrl + "/servers/" + serverId + "/commands.json"))
-                .header("Accept", "application/json")
-                .build();
-        String response = client.send(request, HttpResponse.BodyHandlers.ofString()).body();
-        JSONParser parser = new JSONParser();
-        return (JSONObject) parser.parse(response);
-    }
-
-    private void deleteCommand(String commandId){
-        try{
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(databaseUrl + "/servers/" + serverId + "/commands/" + commandId + ".json"))
-                    .DELETE()
-                    .build();
-            client.send(request, HttpResponse.BodyHandlers.ofString()).body();
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public void onDisable() {
