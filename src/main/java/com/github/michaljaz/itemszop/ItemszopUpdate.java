@@ -12,7 +12,7 @@ public class ItemszopUpdate implements CommandExecutor {
     }
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        sender.sendMessage("Itemszop commands updated");
+        sender.sendMessage("Itemszop commands updated [manually]");
         plugin.sync.syncWithFirebase();
         return true;
     }
