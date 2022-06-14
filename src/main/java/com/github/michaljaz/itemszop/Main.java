@@ -3,6 +3,7 @@ package com.github.michaljaz.itemszop;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -14,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -38,20 +40,24 @@ public class Main extends JavaPlugin {
         triggerPort = config.getString("triggerPort");
 
         // intro
-        long startTime = System.currentTimeMillis();
-        getLogger().info("\n" +
-                "§6(_)| |                                           \n" +
-                "§6 _ | |_   ___  _ __ ___   ___  ____  ___   _ __  \n" +
-                "§6| || __| / _ \\| '_ ` _ \\ / __||_  / / _ \\ | '_ \\ \n" +
-                "§6| || |_ |  __/| | | | | |\\__ \\ / / | (_) || |_) |\n" +
-                "§6|_| \\__| \\___||_| |_| |_||___//___| \\___/ | .__/ \n §2" +
-                "                          " + this.getDescription().getVersion() + "            §6| |    \n" +
-                "\n" + "§fDeveloped by " + this.getDescription().getAuthors() + " dla https://github.com/michaljaz/itemszop §a" + "\n§fPlugin został załadowany w §a" + (System.currentTimeMillis() - startTime) + "ms§7.\n§fWykryty silnik: " + Bukkit.getVersion().split("-")[1]);
-        getLogger().info("Server ID: " + serverId);
-
+        String intro = "\n" +
+                ChatColor.BLUE + "(_)| |                                           \n" +
+                ChatColor.BLUE + " _ | |_   ___  _ __ ___   ___  ____  ___   _ __  \n" +
+                ChatColor.BLUE + "| || __| / _ \\| '_ ` _ \\ / __||_  / / _ \\ | '_ \\ \n" +
+                ChatColor.BLUE + "| || |_ |  __/| | | | | |\\__ \\ / / | (_) || |_) |\n" +
+                ChatColor.BLUE + "|_| \\__| \\___||_| |_| |_||___//___| \\___/ | .__/ \n" +
+                "                          " + ChatColor.AQUA + this.getDescription().getVersion() + "            " + ChatColor.BLUE + "| |    \n" +
+                "\n" + ChatColor.DARK_BLUE + "Plugin do sklepu serwera - https://github.com/michaljaz/itemszop-plugin \n" +
+                ChatColor.DARK_BLUE + "Autorzy: " + this.getDescription().getAuthors() + "\n" +
+                ChatColor.DARK_BLUE + "Id serwera: " + ChatColor.AQUA + serverId + "\n" +
+                ChatColor.DARK_BLUE + "Serwer webowy: " + ChatColor.AQUA + "*:" + triggerPort + "\n ";
+        String[] split = intro.split("\n");
+        for (String s : split) {
+            Bukkit.getConsoleSender().sendMessage(s);
+        }
         sync = new FirebaseSync(this);
 
-        this.getCommand("itemszop_update").setExecutor(new ItemszopUpdate(this));
+        Objects.requireNonNull(this.getCommand("itemszop_update")).setExecutor(new ItemszopUpdate(this));
 
         // trigger web server
         try {
@@ -95,7 +101,7 @@ public class Main extends JavaPlugin {
         }
         @Override
         public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-            sender.sendMessage("Itemszop commands updated [manually]");
+            sender.sendMessage(ChatColor.BLUE + "Itemszop commands updated [manually]");
             plugin.sync.syncWithFirebase();
             return true;
         }
