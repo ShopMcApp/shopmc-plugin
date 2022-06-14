@@ -50,7 +50,9 @@ public class Main extends JavaPlugin {
                 "\n" + ChatColor.DARK_BLUE + "Plugin do sklepu serwera - https://github.com/michaljaz/itemszop-plugin \n" +
                 ChatColor.DARK_BLUE + "Autorzy: " + this.getDescription().getAuthors() + "\n" +
                 ChatColor.DARK_BLUE + "Id serwera: " + ChatColor.AQUA + serverId + "\n" +
-                ChatColor.DARK_BLUE + "Serwer webowy: " + ChatColor.AQUA + "*:" + triggerPort + "\n ";
+                ChatColor.BLUE + "Zaktualizować komendy ze sklepu możesz na 2 sposoby:\n" +
+                ChatColor.BLUE + "-> wpisz komendę " + ChatColor.AQUA + "/itemszop" + ChatColor.BLUE + "\n"+
+                ChatColor.BLUE + "-> wejdź na serwer www " + ChatColor.AQUA + "<ip_tego_serwera>:" + triggerPort + "/itemszop_update\n ";
         String[] split = intro.split("\n");
         for (String s : split) {
             Bukkit.getConsoleSender().sendMessage(s);
@@ -90,7 +92,7 @@ public class Main extends JavaPlugin {
             os.write(response.getBytes());
             os.close();
             plugin.sync.syncWithFirebase();
-            plugin.getLogger().info("Itemszop commands updated [web-trigger]");
+            Bukkit.getConsoleSender().sendMessage(ChatColor.BLUE + "Itemszop commands updated [web-trigger]");
         }
     }
 
