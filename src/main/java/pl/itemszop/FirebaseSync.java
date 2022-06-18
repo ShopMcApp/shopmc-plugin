@@ -1,6 +1,5 @@
 package pl.itemszop;
 
-import com.sun.tools.javac.Main;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -12,13 +11,7 @@ import java.net.http.HttpResponse;
 import java.util.Set;
 
 public class FirebaseSync {
-
-    private static FirebaseSync instance;
     final HttpClient client = HttpClient.newHttpClient();
-
-    public static FirebaseSync getInstance() {
-        return instance;
-    }
     public void syncWithFirebase(){
         try {
             JSONObject commands = getCommands();
