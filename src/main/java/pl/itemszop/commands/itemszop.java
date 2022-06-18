@@ -40,12 +40,12 @@ public class itemszop implements CommandExecutor {
                             e.printStackTrace();
                         }
                     } else {
-                        p.sendMessage("Brak uprawnień");
+                        p.sendMessage("Nie masz uprawnień do wykonania tego polecenia");
                         return false;
                     }
                 }
                 default -> {
-                    p.sendMessage("Coś poszło nie tak!");
+                    p.sendMessage("Wpisałeś niepoprawny argument!");
                 }
             }
             return false;

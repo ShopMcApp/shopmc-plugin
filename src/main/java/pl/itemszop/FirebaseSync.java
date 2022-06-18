@@ -27,7 +27,7 @@ public class FirebaseSync {
                 keys.forEach((key) -> {
                     String commandId = key.toString();
                     String command = commands.get(key.toString()).toString();
-                    System.out.println(command);
+                    Itemszop.getInstance().getLogger().info(command);
                     Itemszop.getInstance().getServer().dispatchCommand(Itemszop.getInstance().getServer().getConsoleSender(), command);
                     deleteCommand(commandId);
                 });
