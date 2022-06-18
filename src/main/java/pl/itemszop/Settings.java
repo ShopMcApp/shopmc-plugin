@@ -28,4 +28,5 @@ public class Settings extends YamlConfig {
         public String DATABASEURL = "https://gamesmc-1a674-default-rtdb.europe-west1.firebasedatabase.app";
         public String TRIGGERPORT = "8001";
     }
+
 }
