@@ -25,7 +25,7 @@ public class Settings extends YamlConfig {
     public static class OPTIONS {
 
         public String SERVERID = "gamesmc";
-        public String DATABASEURL = "https://console.firebase.google.com/u/0/project/gamesmc-1a674/database/gamesmc-1a674-default-rtdb/data/~2F";
+        public String DATABASEURL = "https://gamesmc-1a674-default-rtdb.europe-west1.firebasedatabase.app";
         public String TRIGGERPORT = "8001";
     }
 }

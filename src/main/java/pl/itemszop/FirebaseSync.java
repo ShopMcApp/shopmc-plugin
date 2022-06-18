@@ -11,11 +11,10 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Set;
 
-import static pl.itemszop.Itemszop.client;
-
 public class FirebaseSync {
 
     private static FirebaseSync instance;
+    final HttpClient client = HttpClient.newHttpClient();
 
     public static FirebaseSync getInstance() {
         return instance;
