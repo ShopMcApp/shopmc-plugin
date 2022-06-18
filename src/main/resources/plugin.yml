@@ -1,0 +1,7 @@
+name: Itemszop
+version: '${version}'
+main: pl.itemszop.Itemszop
+api-version: 1.19
+
+commands:
+  itemszop:
