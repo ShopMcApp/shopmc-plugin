@@ -27,8 +27,12 @@ public class itemszop implements CommandExecutor {
         if (p.hasPermission("itemszop.command")) {
             switch (args[0]) {
                 case "update" -> {
-                    sync.syncWithFirebase();
-                    p.sendTitle("", "Dane zostały zaktualizowane");
+                    try {
+                        sync.syncWithFirebase();
+                        p.sendTitle("", "Dane zostały zaktualizowane");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 case "reload" -> {
                     if (p.hasPermission("itemszop.reload")) {
