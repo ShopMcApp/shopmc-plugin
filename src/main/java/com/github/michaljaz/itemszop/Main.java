@@ -1,5 +1,6 @@
 package com.github.michaljaz.itemszop;
 
+import com.neovisionaries.ws.client.*;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -22,12 +23,13 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class Main extends JavaPlugin {
     String serverId;
     String databaseUrl;
-    String triggerPort;
     FirebaseSync sync;
-    HttpServer triggerServer;
 
     @Override
     public void onEnable() {
+
+        WebSocketFactory factory = new WebSocketFactory();
+
         // config file
         FileConfiguration config = this.getConfig();
         config.addDefault("serverId", "");
@@ -37,7 +39,6 @@ public class Main extends JavaPlugin {
         saveConfig();
         serverId = config.getString("serverId");
         databaseUrl = config.getString("databaseUrl");
-        triggerPort = config.getString("triggerPort");
 
         // intro
         String intro = "\n" +
@@ -52,7 +53,7 @@ public class Main extends JavaPlugin {
                 ChatColor.DARK_BLUE + "Id serwera: " + ChatColor.AQUA + serverId + "\n" +
                 ChatColor.BLUE + "Zaktualizować komendy ze sklepu możesz na 2 sposoby:\n" +
                 ChatColor.BLUE + "-> wpisz komendę " + ChatColor.AQUA + "/itemszop" + ChatColor.BLUE + "\n"+
-                ChatColor.BLUE + "-> wejdź na serwer www " + ChatColor.AQUA + "<ip_tego_serwera>:" + triggerPort + "/itemszop_update\n ";
+                ChatColor.BLUE + "-> wejdź na serwer www " + ChatColor.AQUA + "<ip_tego_serwera>: /itemszop_update\n ";
         String[] split = intro.split("\n");
         for (String s : split) {
             Bukkit.getConsoleSender().sendMessage(s);
@@ -60,40 +61,11 @@ public class Main extends JavaPlugin {
         sync = new FirebaseSync(this);
 
         Objects.requireNonNull(this.getCommand("itemszop_update")).setExecutor(new ItemszopUpdate(this));
-
-        // trigger web server
-        try {
-            triggerServer = HttpServer.create(new InetSocketAddress("localhost", Integer.parseInt(triggerPort)), 0);
-            triggerServer.createContext("/itemszop_update", new MyHandler(this));
-            ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
-            triggerServer.setExecutor(threadPoolExecutor);
-            triggerServer.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        triggerServer.stop(0);
-    }
-
-    static class MyHandler implements HttpHandler {
-        Main plugin;
-        public MyHandler(Main plugin){
-            this.plugin = plugin;
-        }
-        @Override
-        public void handle(HttpExchange t) throws IOException {
-            String response = "OK";
-            t.sendResponseHeaders(200, response.length());
-            OutputStream os = t.getResponseBody();
-            os.write(response.getBytes());
-            os.close();
-            plugin.sync.syncWithFirebase();
-            Bukkit.getConsoleSender().sendMessage(ChatColor.BLUE + "Itemszop commands updated [web-trigger]");
-        }
     }
 
     static class ItemszopUpdate implements CommandExecutor {

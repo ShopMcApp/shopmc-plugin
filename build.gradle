@@ -2,6 +2,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id 'java'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
 group = 'com.github.michaljaz.itemszop'
@@ -21,6 +22,7 @@ repositories {
 
 dependencies {
     compileOnly 'com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT'
+    implementation 'com.neovisionaries:nv-websocket-client:2.14'
 }
 
 processResources {
@@ -28,3 +30,14 @@ processResources {
         filter ReplaceTokens, tokens: [version: version]
     }
 }
+shadowJar {
+    getArchiveClassifier().set("")
+    minimize()
+}
+
+compileJava {
+    getOptions().setEncoding("UTF-8")
+}
+tasks.withType(Copy).all { duplicatesStrategy 'exclude' }
+
+assemble.dependsOn(shadowJar)
