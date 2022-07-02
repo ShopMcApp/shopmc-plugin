@@ -12,6 +12,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -33,15 +36,21 @@ public class Main extends JavaPlugin {
             final boolean[] xd = {true};
             ws.addListener(new WebSocketAdapter() {
                 @Override
-                public void onTextMessage(WebSocket websocket, String message) throws Exception {
+                public void onTextMessage(WebSocket websocket, String message) throws ParseException {
                     // Received a text message.
-                    if(xd[0]){
-                        ws.sendText("{\"t\":\"d\",\"d\":{\"r\":2,\"a\":\"q\",\"b\":{\"p\":\"/servers/gitcraft/commands\",\"h\":\"\"}}}");
-                        xd[0] =false;
+                    System.out.println(message);
+                    JSONParser parser = new JSONParser();
+                    JSONObject json = (JSONObject) parser.parse(message);
+                    JSONObject json_data = (JSONObject) parser.parse(json.get("d").toString());
+                    String data = (String) json_data.get("d");
+                    boolean requiresUpdate = json_data.get("t").equals("r");
+                    if(requiresUpdate){
+                        System.out.println(data);
                     }
-
-                    System.out.println(message.toString());
-
+//                    if(xd[0]){
+//                        ws.sendText("{\"t\":\"d\",\"d\":{\"r\":2,\"a\":\"q\",\"b\":{\"p\":\"/servers/gitcraft/commands\",\"h\":\"\"}}}");
+//                        xd[0] =false;
+//                    }
                 }
             });
             try
