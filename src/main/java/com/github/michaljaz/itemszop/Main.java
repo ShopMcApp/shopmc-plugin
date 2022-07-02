@@ -28,7 +28,44 @@ public class Main extends JavaPlugin {
     @Override
     public void onEnable() {
 
-        WebSocketFactory factory = new WebSocketFactory();
+        try {
+            WebSocket ws = new WebSocketFactory().createSocket("wss://s-euw1b-nss-209.europe-west1.firebasedatabase.app/.ws?v=5&ns=sklepmc-c7516-default-rtdb");
+            final boolean[] xd = {true};
+            ws.addListener(new WebSocketAdapter() {
+                @Override
+                public void onTextMessage(WebSocket websocket, String message) throws Exception {
+                    // Received a text message.
+                    if(xd[0]){
+                        ws.sendText("{\"t\":\"d\",\"d\":{\"r\":2,\"a\":\"q\",\"b\":{\"p\":\"/servers/gitcraft/commands\",\"h\":\"\"}}}");
+                        xd[0] =false;
+                    }
+
+                    System.out.println(message.toString());
+
+                }
+            });
+            try
+            {
+                // Connect to the server and perform an opening handshake.
+                // This method blocks until the opening handshake is finished.
+                ws.connect();
+            }
+            catch (OpeningHandshakeException e)
+            {
+                // A violation against the WebSocket protocol was detected
+                // during the opening handshake.
+            }
+            catch (HostnameUnverifiedException e)
+            {
+                // The certificate of the peer does not match the expected hostname.
+            }
+            catch (WebSocketException e)
+            {
+                // Failed to establish a WebSocket connection.
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         // config file
         FileConfiguration config = this.getConfig();
