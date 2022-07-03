@@ -83,7 +83,7 @@ public class Main extends JavaPlugin {
             public void onConnected(WebSocket websocket, Map<String, List<String>> headers) throws Exception {
                 super.onConnected(websocket, headers);
                 System.out.println("connected!");
-                ws.sendText("{\"t\":\"d\",\"d\":{\"r\":2,\"a\":\"q\",\"b\":{\"p\":\"/servers/" + serverId +  "/serverName/\",\"h\":\"\"}}}");
+                ws.sendText("{\"t\":\"d\",\"d\":{\"r\":2,\"a\":\"q\",\"b\":{\"p\":\"/servers/" + serverId +  "/commands/" + secret + "\",\"h\":\"\"}}}");
             }
 
             @Override
