@@ -22,6 +22,51 @@ public class Main extends JavaPlugin {
     String serverId;
     String secret;
 
+    @Override
+    public void onEnable() {
+
+        // config file
+        FileConfiguration config = this.getConfig();
+        config.addDefault("key", "");
+        config.options().copyDefaults(true);
+        saveConfig();
+        key = config.getString("key");
+
+        //decode config key
+        byte[] decoded = Base64.getDecoder().decode(key);
+        String decodedStr = new String(decoded, StandardCharsets.UTF_8);
+        String[] stringList = decodedStr.split("@");
+        secret = stringList[0];
+        firebaseWebsocketUrl = stringList[1];
+        serverId = stringList[2];
+        System.out.println(secret);
+        System.out.println(firebaseWebsocketUrl);
+        System.out.println(serverId);
+
+        // intro
+        String intro = "\n" +
+                ChatColor.BLUE + "(_)| |                                           \n" +
+                ChatColor.BLUE + " _ | |_   ___  _ __ ___   ___  ____  ___   _ __  \n" +
+                ChatColor.BLUE + "| || __| / _ \\| '_ ` _ \\ / __||_  / / _ \\ | '_ \\ \n" +
+                ChatColor.BLUE + "| || |_ |  __/| | | | | |\\__ \\ / / | (_) || |_) |\n" +
+                ChatColor.BLUE + "|_| \\__| \\___||_| |_| |_||___//___| \\___/ | .__/ \n" +
+                "                          " + ChatColor.AQUA + this.getDescription().getVersion() + "            " + ChatColor.BLUE + " | |    \n" +
+                "\n" + ChatColor.DARK_BLUE + "Plugin do sklepu serwera - https://github.com/michaljaz/itemszop-plugin \n" +
+                ChatColor.DARK_BLUE + "Autorzy: " + this.getDescription().getAuthors() + "\n" +
+                ChatColor.DARK_BLUE + "Id serwera: " + ChatColor.AQUA + serverId + "\n";
+        String[] split = intro.split("\n");
+        for (String s : split) {
+            Bukkit.getConsoleSender().sendMessage(s);
+        }
+
+        //connect to firebase
+        try {
+            connectToFirebase();
+        } catch (IOException | WebSocketException e) {
+            e.printStackTrace();
+        }
+    }
+
     void connectToFirebase() throws IOException, WebSocketException {
         System.out.println("Connecting to " + firebaseWebsocketUrl + "...");
         WebSocket ws = new WebSocketFactory().createSocket(firebaseWebsocketUrl);
@@ -45,46 +90,6 @@ public class Main extends JavaPlugin {
         });
         ws.connect();
         ws.sendText("{\"t\":\"d\",\"d\":{\"r\":2,\"a\":\"q\",\"b\":{\"p\":\"/servers/gitcraft/commands\",\"h\":\"\"}}}");
-    }
-
-    @Override
-    public void onEnable() {
-//        try {
-//            connectToFirebase();
-//        } catch (IOException | WebSocketException e) {
-//            e.printStackTrace();
-//        }
-        // config file
-        FileConfiguration config = this.getConfig();
-        config.addDefault("key", "");
-        config.options().copyDefaults(true);
-        saveConfig();
-        key = config.getString("key");
-
-        byte[] decoded = Base64.getDecoder().decode(key);
-        String decodedStr = new String(decoded, StandardCharsets.UTF_8);
-        String[] stringList = decodedStr.split("@");
-        secret = stringList[0];
-        firebaseWebsocketUrl = stringList[1];
-        serverId = stringList[2];
-        System.out.println(secret);
-        System.out.println(firebaseWebsocketUrl);
-        System.out.println(serverId);
-        // intro
-        String intro = "\n" +
-                ChatColor.BLUE + "(_)| |                                           \n" +
-                ChatColor.BLUE + " _ | |_   ___  _ __ ___   ___  ____  ___   _ __  \n" +
-                ChatColor.BLUE + "| || __| / _ \\| '_ ` _ \\ / __||_  / / _ \\ | '_ \\ \n" +
-                ChatColor.BLUE + "| || |_ |  __/| | | | | |\\__ \\ / / | (_) || |_) |\n" +
-                ChatColor.BLUE + "|_| \\__| \\___||_| |_| |_||___//___| \\___/ | .__/ \n" +
-                "                          " + ChatColor.AQUA + this.getDescription().getVersion() + "            " + ChatColor.BLUE + " | |    \n" +
-                "\n" + ChatColor.DARK_BLUE + "Plugin do sklepu serwera - https://github.com/michaljaz/itemszop-plugin \n" +
-                ChatColor.DARK_BLUE + "Autorzy: " + this.getDescription().getAuthors() + "\n" +
-                ChatColor.DARK_BLUE + "Id serwera: " + ChatColor.AQUA + serverId + "\n";
-        String[] split = intro.split("\n");
-        for (String s : split) {
-            Bukkit.getConsoleSender().sendMessage(s);
-        }
     }
 
     @Override
