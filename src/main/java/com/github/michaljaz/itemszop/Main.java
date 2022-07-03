@@ -11,7 +11,6 @@ import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Base64;
@@ -32,13 +31,21 @@ public class Main extends JavaPlugin {
         saveConfig();
         key = config.getString("key");
 
-        //decode config key
+        // decode config key
         byte[] decoded = Base64.getDecoder().decode(key);
         String decodedStr = new String(decoded, StandardCharsets.UTF_8);
         String[] stringList = decodedStr.split("@");
         secret = stringList[0];
         firebaseWebsocketUrl = stringList[1];
         serverId = stringList[2];
+
+        // cut websocket url param
+        int index = firebaseWebsocketUrl.indexOf("&s=");
+        if(index != -1){
+            String[] urlList = firebaseWebsocketUrl.split("&");
+            firebaseWebsocketUrl = urlList[0] + "&" + urlList[2];
+            System.out.println(firebaseWebsocketUrl);
+        }
         System.out.println(secret);
         System.out.println(firebaseWebsocketUrl);
         System.out.println(serverId);
@@ -76,20 +83,20 @@ public class Main extends JavaPlugin {
             public void onConnected(WebSocket websocket, Map<String, List<String>> headers) throws Exception {
                 super.onConnected(websocket, headers);
                 System.out.println("connected!");
+                ws.sendText("{\"t\":\"d\",\"d\":{\"r\":2,\"a\":\"q\",\"b\":{\"p\":\"/servers/" + serverId +  "/serverName/\",\"h\":\"\"}}}");
             }
 
             @Override
-            public void onTextMessage(WebSocket websocket, String message) throws ParseException, IOException, WebSocketException {
+            public void onTextMessage(WebSocket websocket, String message) {
                 // Received a text message.
                 System.out.println(message);
-                JSONParser parser = new JSONParser();
-                JSONObject json = (JSONObject) parser.parse(message);
-                JSONObject json_data = (JSONObject) parser.parse(json.get("d").toString());
-                String data = json_data.get("d").toString();
+//                JSONParser parser = new JSONParser();
+//                JSONObject json = (JSONObject) parser.parse(message);
+//                JSONObject json_data = (JSONObject) parser.parse(json.get("d").toString());
+//                String data = json_data.get("d").toString();
             }
         });
         ws.connect();
-        ws.sendText("{\"t\":\"d\",\"d\":{\"r\":2,\"a\":\"q\",\"b\":{\"p\":\"/servers/gitcraft/commands\",\"h\":\"\"}}}");
     }
 
     @Override
