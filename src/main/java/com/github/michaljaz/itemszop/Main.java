@@ -20,6 +20,7 @@ public class Main extends JavaPlugin {
     String firebaseWebsocketUrl;
     String serverId;
     String secret;
+    WebSocket ws;
 
     @Override
     public void onEnable() {
@@ -76,24 +77,26 @@ public class Main extends JavaPlugin {
 
     void connectToFirebase() throws IOException, WebSocketException {
         System.out.println("Connecting to " + firebaseWebsocketUrl + "...");
-        WebSocket ws = new WebSocketFactory().createSocket(firebaseWebsocketUrl);
+        ws = new WebSocketFactory().createSocket(firebaseWebsocketUrl);
 
         ws.addListener(new WebSocketAdapter() {
             @Override
             public void onConnected(WebSocket websocket, Map<String, List<String>> headers) throws Exception {
                 super.onConnected(websocket, headers);
-                System.out.println("connected!");
+                System.out.println("Connected!");
                 ws.sendText("{\"t\":\"d\",\"d\":{\"r\":2,\"a\":\"q\",\"b\":{\"p\":\"/servers/" + serverId +  "/commands/" + secret + "\",\"h\":\"\"}}}");
             }
 
             @Override
-            public void onTextMessage(WebSocket websocket, String message) {
+            public void onTextMessage(WebSocket websocket, String message){
                 // Received a text message.
                 System.out.println(message);
 //                JSONParser parser = new JSONParser();
 //                JSONObject json = (JSONObject) parser.parse(message);
 //                JSONObject json_data = (JSONObject) parser.parse(json.get("d").toString());
+//                json_data = (JSONObject) parser.parse(json_data.get("b").toString());
 //                String data = json_data.get("d").toString();
+//                System.out.println(data);
             }
         });
         ws.connect();
@@ -102,6 +105,8 @@ public class Main extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+        ws.disconnect();
+        System.out.println("Disconnected!");
     }
 }
 
