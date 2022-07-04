@@ -88,31 +88,33 @@ public class Main extends JavaPlugin {
             public void onConnected(WebSocket websocket, Map<String, List<String>> headers) throws Exception {
                 super.onConnected(websocket, headers);
                 System.out.println("Connected!");
-                ws.sendText("{\"t\":\"d\",\"d\":{\"r\":2,\"a\":\"q\",\"b\":{\"p\":\"/servers/" + serverId +  "/commands/" + secret + "\",\"h\":\"\"}}}");
+                ws.sendText("{\"t\":\"d\",\"d\":{\"r\":1,\"a\":\"q\",\"b\":{\"p\":\"/servers/" + serverId +  "/commands/" + secret + "\",\"h\":\"\"}}}");
             }
 
             @Override
             public void onTextMessage(WebSocket websocket, String message) throws ParseException {
                 // Received a text message.
+                System.out.println(message);
                 JSONParser parser = new JSONParser();
                 JSONObject json = (JSONObject) parser.parse(message);
                 JSONObject json_data = (JSONObject) parser.parse(json.get("d").toString());
                 json_data = (JSONObject) parser.parse(json_data.get("b").toString());
                 if (json_data.get("d") != null){
                     json_data = (JSONObject) parser.parse(json_data.get("d").toString());
-                    for (Object command : json_data.values()) {
-                        System.out.println("EXE: " + command.toString());
-                        getScheduler().runTask(plugin, () -> getServer().dispatchCommand(getServer().getConsoleSender(), command.toString()));
+                    for (Object commandId : json_data.keySet()) {
+                        String command = json_data.get(commandId).toString();
+                        System.out.println(command);
+                        ws.sendText("{ \"t\": \"d\", \"d\": { \"r\": 1, \"a\": \"p\", \"b\": { \"p\": \"/servers/" + serverId + "/commands/" + secret + "/" + commandId + "\", \"d\": null } } }");
+                        getScheduler().runTask(plugin, () -> getServer().dispatchCommand(getServer().getConsoleSender(), command));
                     }
                 }else{
-                    System.out.println("RESET STACK");
+                    System.out.println("Command stack is empty!");
                 }
 
             }
         });
         ws.connect();
     }
-
     @Override
     public void onDisable() {
         // Plugin shutdown logic
