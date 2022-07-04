@@ -60,12 +60,20 @@ public class Main extends JavaPlugin {
         }
 
         //connect to firebase
-        try {
-            ws = new WebSocket(plugin, new URI(firebaseWebsocketUrl));
-            ws.connect();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
+        new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        try {
+                            ws = new WebSocket(plugin, new URI(firebaseWebsocketUrl));
+                            ws.connect();
+                        } catch (URISyntaxException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                3000
+        );
     }
 
     @Override
