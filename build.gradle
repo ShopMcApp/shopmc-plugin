@@ -25,7 +25,7 @@ repositories {
 dependencies {
     compileOnly 'io.papermc.paper:paper-api:1.19-R0.1-SNAPSHOT'
     implementation("net.elytrium:elytrium-java-commons:1.0.5")
-    implementation 'com.neovisionaries:nv-websocket-client:2.14'
+    implementation 'org.java-websocket:Java-WebSocket:1.5.3'
 }
 
 
