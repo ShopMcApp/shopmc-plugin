@@ -15,15 +15,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Base64;
 
+import static org.bukkit.Bukkit.getScheduler;
+
 public class Main extends JavaPlugin {
     String key;
     String firebaseWebsocketUrl;
     String serverId;
     String secret;
     WebSocket ws;
+    Main plugin;
 
     @Override
     public void onEnable() {
+        plugin = this;
 
         // config file
         FileConfiguration config = this.getConfig();
@@ -88,15 +92,22 @@ public class Main extends JavaPlugin {
             }
 
             @Override
-            public void onTextMessage(WebSocket websocket, String message){
+            public void onTextMessage(WebSocket websocket, String message) throws ParseException {
                 // Received a text message.
-                System.out.println(message);
-//                JSONParser parser = new JSONParser();
-//                JSONObject json = (JSONObject) parser.parse(message);
-//                JSONObject json_data = (JSONObject) parser.parse(json.get("d").toString());
-//                json_data = (JSONObject) parser.parse(json_data.get("b").toString());
-//                String data = json_data.get("d").toString();
-//                System.out.println(data);
+                JSONParser parser = new JSONParser();
+                JSONObject json = (JSONObject) parser.parse(message);
+                JSONObject json_data = (JSONObject) parser.parse(json.get("d").toString());
+                json_data = (JSONObject) parser.parse(json_data.get("b").toString());
+                if (json_data.get("d") != null){
+                    json_data = (JSONObject) parser.parse(json_data.get("d").toString());
+                    for (Object command : json_data.values()) {
+                        System.out.println("EXE: " + command.toString());
+                        getScheduler().runTask(plugin, () -> getServer().dispatchCommand(getServer().getConsoleSender(), command.toString()));
+                    }
+                }else{
+                    System.out.println("RESET STACK");
+                }
+
             }
         });
         ws.connect();
@@ -105,8 +116,12 @@ public class Main extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        ws.disconnect();
-        System.out.println("Disconnected!");
+        try {
+            ws.disconnect();
+            System.out.println("Disconnected!");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
 
