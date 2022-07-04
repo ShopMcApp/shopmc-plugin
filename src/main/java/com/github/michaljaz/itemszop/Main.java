@@ -81,6 +81,12 @@ public class Main extends JavaPlugin {
 
         ws.addListener(new WebSocketAdapter() {
             @Override
+            public void onDisconnected(WebSocket websocket, WebSocketFrame serverCloseFrame, WebSocketFrame clientCloseFrame, boolean closedByServer) throws Exception {
+                super.onDisconnected(websocket, serverCloseFrame, clientCloseFrame, closedByServer);
+                System.out.println("Disconnected!");
+            }
+
+            @Override
             public void onConnected(WebSocket websocket, Map<String, List<String>> headers) throws Exception {
                 //connected to websocket server
 
@@ -131,12 +137,7 @@ public class Main extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        try {
-            ws.disconnect();
-            System.out.println("Disconnected!");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        ws.sendClose();
     }
 }
 
