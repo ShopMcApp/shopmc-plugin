@@ -18,7 +18,6 @@ import java.util.Base64;
 import static org.bukkit.Bukkit.getScheduler;
 
 public class Main extends JavaPlugin {
-    String key;
     String firebaseWebsocketUrl;
     String serverId;
     String secret;
@@ -34,7 +33,7 @@ public class Main extends JavaPlugin {
         config.addDefault("key", "");
         config.options().copyDefaults(true);
         saveConfig();
-        key = config.getString("key");
+        String key = config.getString("key");
 
         // decode config key
         byte[] decoded = Base64.getDecoder().decode(key);
@@ -46,14 +45,11 @@ public class Main extends JavaPlugin {
 
         // cut websocket url param
         int index = firebaseWebsocketUrl.indexOf("&s=");
-        if(index != -1){
+        if(index != -1) {
             String[] urlList = firebaseWebsocketUrl.split("&");
             firebaseWebsocketUrl = urlList[0] + "&" + urlList[2];
             System.out.println(firebaseWebsocketUrl);
         }
-        System.out.println(secret);
-        System.out.println(firebaseWebsocketUrl);
-        System.out.println(serverId);
 
         // intro
         String intro = "\n" +
@@ -86,14 +82,18 @@ public class Main extends JavaPlugin {
         ws.addListener(new WebSocketAdapter() {
             @Override
             public void onConnected(WebSocket websocket, Map<String, List<String>> headers) throws Exception {
+                //connected to websocket server
+
                 super.onConnected(websocket, headers);
                 System.out.println("Connected!");
-                ws.sendText("{\"t\":\"d\",\"d\":{\"r\":1,\"a\":\"q\",\"b\":{\"p\":\"/servers/" + serverId +  "/commands/" + secret + "\",\"h\":\"\"}}}");
+                sendCommandsRequest();
             }
 
             @Override
             public void onTextMessage(WebSocket websocket, String message) throws ParseException {
                 // Received a text message.
+
+                // decode data
                 System.out.println(message);
                 JSONParser parser = new JSONParser();
                 JSONObject json = (JSONObject) parser.parse(message);
@@ -102,12 +102,16 @@ public class Main extends JavaPlugin {
                 if (json_data.get("d") != null){
                     json_data = (JSONObject) parser.parse(json_data.get("d").toString());
                     for (Object commandId : json_data.keySet()) {
+
+                        // handle command
                         String command = json_data.get(commandId).toString();
                         System.out.println(command);
-                        ws.sendText("{ \"t\": \"d\", \"d\": { \"r\": 1, \"a\": \"p\", \"b\": { \"p\": \"/servers/" + serverId + "/commands/" + secret + "/" + commandId + "\", \"d\": null } } }");
+                        deleteCommandById(commandId.toString());
                         getScheduler().runTask(plugin, () -> getServer().dispatchCommand(getServer().getConsoleSender(), command));
                     }
                 }else{
+
+                    // empty stack
                     System.out.println("Command stack is empty!");
                 }
 
@@ -115,6 +119,15 @@ public class Main extends JavaPlugin {
         });
         ws.connect();
     }
+
+    void sendCommandsRequest(){
+        ws.sendText("{\"t\":\"d\",\"d\":{\"r\":1,\"a\":\"q\",\"b\":{\"p\":\"/servers/" + serverId + "/commands/" + secret + "\",\"h\":\"\"}}}");
+    }
+
+    void deleteCommandById(String commandId){
+        ws.sendText("{\"t\":\"d\",\"d\":{\"r\":1,\"a\":\"p\",\"b\":{\"p\":\"/servers/" + serverId + "/commands/" + secret + "/" + commandId + "\",\"d\":null}}}");
+    }
+
     @Override
     public void onDisable() {
         // Plugin shutdown logic
