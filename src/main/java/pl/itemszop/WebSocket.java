@@ -1,6 +1,5 @@
 package pl.itemszop;
 
-import com.sun.tools.javac.Main;
 import org.bukkit.Bukkit;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -15,7 +14,6 @@ import static org.bukkit.Bukkit.*;
 
 public class WebSocket extends WebSocketClient {
     Itemszop plugin;
-    private static WebSocket instance;
 
     public WebSocket(Itemszop plugin, URI serverUri) {
         super(serverUri);
