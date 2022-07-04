@@ -1,28 +1,20 @@
 package com.github.michaljaz.itemszop;
 
-import com.neovisionaries.ws.client.*;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
-import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Map;
 import java.util.Base64;
-
-import static org.bukkit.Bukkit.getScheduler;
 
 public class Main extends JavaPlugin {
     String firebaseWebsocketUrl;
     String serverId;
     String secret;
-    WebSocket ws;
     Main plugin;
+    WebSocket ws;
 
     @Override
     public void onEnable() {
@@ -69,75 +61,17 @@ public class Main extends JavaPlugin {
 
         //connect to firebase
         try {
-            connectToFirebase();
-        } catch (IOException | WebSocketException e) {
+            ws = new WebSocket(plugin, new URI(firebaseWebsocketUrl));
+            ws.connect();
+        } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-    }
-
-    void connectToFirebase() throws IOException, WebSocketException {
-        System.out.println("Connecting to " + firebaseWebsocketUrl + "...");
-        ws = new WebSocketFactory().createSocket(firebaseWebsocketUrl);
-
-        ws.addListener(new WebSocketAdapter() {
-            @Override
-            public void onDisconnected(WebSocket websocket, WebSocketFrame serverCloseFrame, WebSocketFrame clientCloseFrame, boolean closedByServer) throws Exception {
-                super.onDisconnected(websocket, serverCloseFrame, clientCloseFrame, closedByServer);
-                System.out.println("Disconnected!");
-            }
-
-            @Override
-            public void onConnected(WebSocket websocket, Map<String, List<String>> headers) throws Exception {
-                //connected to websocket server
-
-                super.onConnected(websocket, headers);
-                System.out.println("Connected!");
-                sendCommandsRequest();
-            }
-
-            @Override
-            public void onTextMessage(WebSocket websocket, String message) throws ParseException {
-                // Received a text message.
-
-                // decode data
-                System.out.println(message);
-                JSONParser parser = new JSONParser();
-                JSONObject json = (JSONObject) parser.parse(message);
-                JSONObject json_data = (JSONObject) parser.parse(json.get("d").toString());
-                json_data = (JSONObject) parser.parse(json_data.get("b").toString());
-                if (json_data.get("d") != null){
-                    json_data = (JSONObject) parser.parse(json_data.get("d").toString());
-                    for (Object commandId : json_data.keySet()) {
-
-                        // handle command
-                        String command = json_data.get(commandId).toString();
-                        System.out.println(command);
-                        deleteCommandById(commandId.toString());
-                        getScheduler().runTask(plugin, () -> getServer().dispatchCommand(getServer().getConsoleSender(), command));
-                    }
-                }else{
-
-                    // empty stack
-                    System.out.println("Command stack is empty!");
-                }
-
-            }
-        });
-        ws.connect();
-    }
-
-    void sendCommandsRequest(){
-        ws.sendText("{\"t\":\"d\",\"d\":{\"r\":1,\"a\":\"q\",\"b\":{\"p\":\"/servers/" + serverId + "/commands/" + secret + "\",\"h\":\"\"}}}");
-    }
-
-    void deleteCommandById(String commandId){
-        ws.sendText("{\"t\":\"d\",\"d\":{\"r\":1,\"a\":\"p\",\"b\":{\"p\":\"/servers/" + serverId + "/commands/" + secret + "/" + commandId + "\",\"d\":null}}}");
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        ws.sendClose();
+        ws.close();
     }
 }
 

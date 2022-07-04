@@ -22,7 +22,7 @@ repositories {
 
 dependencies {
     compileOnly 'com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT'
-    implementation 'com.neovisionaries:nv-websocket-client:2.14'
+    implementation 'org.java-websocket:Java-WebSocket:1.5.3'
 }
 
 processResources {
