@@ -15,6 +15,7 @@ import static org.bukkit.Bukkit.*;
 
 public class WebSocket extends WebSocketClient {
     Itemszop plugin;
+    private static WebSocket instance;
 
     public WebSocket(Itemszop plugin, URI serverUri) {
         super(serverUri);

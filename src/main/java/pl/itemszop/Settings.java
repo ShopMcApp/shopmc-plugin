@@ -8,6 +8,8 @@ public class Settings extends YamlConfig {
     public static final Settings IMP = new Settings();
 
     public String PREFIX = "<green>Itemszop <gray>>»";
+
+    public String NO_PERMISSION = "<red>Brak uprawnień.";
     public String KEY = "";
     public String FIREBASEWEBSOCKETURL= "";
     public String SERVERID = "";

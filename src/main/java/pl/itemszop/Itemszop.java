@@ -1,21 +1,23 @@
 package pl.itemszop;
 
 import net.elytrium.java.commons.mc.serialization.Serializer;
+import net.elytrium.java.commons.mc.serialization.Serializers;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.ComponentSerializer;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.java_websocket.WebSocket;
+import pl.itemszop.commands.itemszop_cmd;
 
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Objects;
 
 public class Itemszop extends JavaPlugin {
-
-    pl.itemszop.WebSocket ws;
+    WebSocket ws;
     Itemszop plugin;
     private static Serializer serializer;
-
     String key = Settings.IMP.KEY;
     String firebaseWebsocketUrl = Settings.IMP.FIREBASEWEBSOCKETURL;
     String serverId = Settings.IMP.SERVERID;
@@ -23,6 +25,7 @@ public class Itemszop extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        registerCommands();
         plugin = this;
         Settings.IMP.reload(new File(this.getDataFolder(), "config.yml"), Settings.IMP.PREFIX);
         // decode config key
@@ -33,6 +36,7 @@ public class Itemszop extends JavaPlugin {
         firebaseWebsocketUrl = stringList[1];
         serverId = stringList[2];
 
+
         // cut websocket url param
         int index = firebaseWebsocketUrl.indexOf("&s=");
         if(index != -1) {
@@ -40,9 +44,17 @@ public class Itemszop extends JavaPlugin {
             firebaseWebsocketUrl = urlList[0] + "&" + urlList[2];
             getLogger().info(firebaseWebsocketUrl);
         }
-
         // Startup message
         getLogger().info(this.getName() + this.getDescription().getVersion() + " by " + this.getDescription().getAuthors() + "\n Plugin do sklepu serwera - https://github.com/michaljaz/itemszop-plugin");
+
+        ComponentSerializer<Component, Component, String> serializer = Serializers.valueOf(Settings.IMP.SERIALIZER).getSerializer();
+        if (serializer == null) {
+            this.getLogger().info("The specified serializer could not be founded, using default. (LEGACY_AMPERSAND)");
+            setSerializer(new Serializer(Objects.requireNonNull(Serializers.LEGACY_AMPERSAND.getSerializer())));
+        } else {
+            setSerializer(new Serializer(serializer));
+        }
+
 
         //connect to firebase
         new java.util.Timer().schedule(
@@ -60,11 +72,14 @@ public class Itemszop extends JavaPlugin {
                 3000
         );
     }
-
     @Override
     public void onDisable() {
         // Plugin shutdown logic
         ws.close();
+    }
+
+    private void registerCommands() {
+        new itemszop_cmd().register(getCommand("itemszop"));
     }
 
     public void reloadPlugin() {
