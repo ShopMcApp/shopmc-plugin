@@ -7,7 +7,11 @@ public class Settings extends YamlConfig {
     @Ignore
     public static final Settings IMP = new Settings();
 
-    public String PREFIX = "<green>Itemszop &8»";
+    public String PREFIX = "<green>Itemszop <gray>>»";
+    public String KEY = "";
+    public String FIREBASEWEBSOCKETURL= "";
+    public String SERVERID = "";
+    public String SECRET = "";
 
     @Comment({
             "Available serializers:",
@@ -19,14 +23,5 @@ public class Settings extends YamlConfig {
     })
     public String SERIALIZER = "MINIMESSAGE";
 
-    @Create
-    public OPTIONS OPTIONS;
-
-    public static class OPTIONS {
-
-        public String SERVERID = "";
-        public String DATABASEURL = "";
-        public String TRIGGERPORT = "8001";
-    }
 
 }

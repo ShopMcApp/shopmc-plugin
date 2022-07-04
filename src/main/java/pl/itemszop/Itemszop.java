@@ -1,43 +1,109 @@
 package pl.itemszop;
 
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
+import com.neovisionaries.ws.client.*;
+import com.sun.tools.javac.Main;
 import net.elytrium.java.commons.mc.serialization.Serializer;
-import org.bukkit.plugin.java.JavaPlugin;
 import net.elytrium.java.commons.mc.serialization.Serializers;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
-import pl.itemszop.commands.itemszop;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
+import java.util.List;
+import java.util.Map;
+import java.util.Base64;
 import java.util.Objects;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
+
+import static org.bukkit.Bukkit.getScheduler;
 
 public final class Itemszop extends JavaPlugin {
-
-    HttpServer triggerServer;
-    static FirebaseSync sync = new FirebaseSync();
-
     private static Itemszop instance;
     private static Serializer serializer;
-
+    WebSocket ws;
+    Main plugin;
     public static Itemszop getInstance() {
         return instance;
     }
+
+    String key = Settings.IMP.KEY;
+    String firebaseWebsocketUrl = Settings.IMP.FIREBASEWEBSOCKETURL;
+    String serverId = Settings.IMP.SERVERID;
+    String secret = Settings.IMP.SECRET;
 
     @Override
     public void onEnable() {
         Settings.IMP.reload(new File(this.getDataFolder(), "config.yml"), Settings.IMP.PREFIX);
 
-        instance = this;
+        // decode config key
+        byte[] decoded = Base64.getDecoder().decode(Settings.IMP.KEY);
+        String decodedStr = new String(decoded, StandardCharsets.UTF_8);
+        String[] stringList = decodedStr.split("@");
+        secret = stringList[0];
+        firebaseWebsocketUrl = stringList[1];
+        serverId = stringList[2];
 
-        this.getLogger().info(this.getName() + this.getDescription().getVersion() + " by " + this.getDescription().getAuthors());
-        this.registerCommands();
+        // cut websocket url param
+        int index = firebaseWebsocketUrl.indexOf("&s=");
+        if(index != -1){
+            String[] urlList = firebaseWebsocketUrl.split("&");
+            firebaseWebsocketUrl = urlList[0] + "&" + urlList[2];
+            getLogger().info(firebaseWebsocketUrl);
+        }
+        getLogger().info(secret);
+        getLogger().info(firebaseWebsocketUrl);
+        getLogger().info(serverId);
+
+        // intro
+        getLogger().info(this.getName() + this.getDescription().getVersion() + " by " + this.getDescription().getAuthors() + "\n Plugin do sklepu serwera - https://github.com/michaljaz/itemszop-plugin");
+
+        //connect to firebase
+        try {
+            connectToFirebase();
+        } catch (IOException | WebSocketException e) {
+            e.printStackTrace();
+        }
+    }
+
+    void connectToFirebase() throws IOException, WebSocketException {
+        getLogger().info("Connecting to " + firebaseWebsocketUrl + "...");
+        WebSocket ws = new WebSocketFactory().createSocket(firebaseWebsocketUrl);
+
+        ws.addListener(new WebSocketAdapter() {
+            @Override
+            public void onConnected(WebSocket websocket, Map<String, List<String>> headers) throws Exception {
+                super.onConnected(websocket, headers);
+                getLogger().info("Połączono!");
+                ws.sendText("{\"t\":\"d\",\"d\":{\"r\":1,\"a\":\"q\",\"b\":{\"p\":\"/servers/" + serverId +  "/commands/" + secret + "\",\"h\":\"\"}}}");
+            }
+
+            @Override
+            public void onTextMessage(WebSocket websocket, String message) throws ParseException, org.json.simple.parser.ParseException {
+                JSONParser parser = new JSONParser();
+                JSONObject json = (JSONObject) parser.parse(message);
+                JSONObject json_data = (JSONObject) parser.parse(json.get("d").toString());
+                json_data = (JSONObject) parser.parse(json_data.get("b").toString());
+                if (json_data.get("d") != null){
+                    json_data = (JSONObject) parser.parse(json_data.get("d").toString());
+                    for (Object commandId : json_data.keySet()) {
+                        String command = json_data.get(commandId).toString();
+                        getLogger().info(command);
+                        ws.sendText("{ \"t\": \"d\", \"d\": { \"r\": 1, \"a\": \"p\", \"b\": { \"p\": \"/servers/" + serverId + "/commands/" + secret + "/" + commandId + "\", \"d\": null } } }");
+                        getScheduler().runTask((Plugin) plugin, () -> getServer().dispatchCommand(getServer().getConsoleSender(), command));
+                    }
+                }else{
+                    Bukkit.getLogger().warning("Command stack is empty!");
+                }
+
+            }
+        });
+        ws.connect();
 
         ComponentSerializer<Component, Component, String> serializer = Serializers.valueOf(Settings.IMP.SERIALIZER).getSerializer();
         if (serializer == null) {
@@ -47,47 +113,22 @@ public final class Itemszop extends JavaPlugin {
             setSerializer(new Serializer(serializer));
         }
 
+    }
+    @Override
+    public void onDisable() {
         try {
-            triggerServer = HttpServer.create(new InetSocketAddress("localhost", Integer.parseInt(Settings.IMP.OPTIONS.TRIGGERPORT)), 0);
-            triggerServer.createContext("/itemszop_update", new MyHandler());
-            ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
-            triggerServer.setExecutor(threadPoolExecutor);
-            triggerServer.start();
-        } catch (IOException e) {
+            ws.disconnect();
+            getLogger().warning("Disconnected!");
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-    class MyHandler implements HttpHandler {
-        @Override
-        public void handle(HttpExchange t) throws IOException {
-            String response = "OK";
-            t.sendResponseHeaders(200, response.length());
-            OutputStream os = t.getResponseBody();
-            os.write(response.getBytes());
-            os.close();
-            sync.syncWithFirebase();
-            getLogger().info("Itemszop commands updated [web-trigger]");
-        }
-    }
-
-    @Override
-    public void onDisable() {
-    }
-
-    private void registerCommands() {
-        this.getCommand("itemszop").setExecutor(new itemszop());
-    }
-
     public void reloadPlugin() {
         Settings.IMP.reload(new File(this.getDataFolder().toPath().toFile().getAbsoluteFile(), "config.yml"));
     }
-
-
     private static void setSerializer(Serializer serializer) {
         Itemszop.serializer = serializer;
     }
-
     public static Serializer getSerializer() {
         return serializer;
     }
