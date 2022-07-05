@@ -1,0 +1,10 @@
+name: Itemszop-Plugin
+version: '${version}'
+main: pl.itemszop.Itemszop
+api-version: 1.19
+authors:
+  - ReferTV
+  - drmike
+
+commands:
+  itemszop:
