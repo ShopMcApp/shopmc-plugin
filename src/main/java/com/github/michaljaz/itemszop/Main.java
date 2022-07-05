@@ -42,7 +42,6 @@ public class Main extends JavaPlugin {
             firebaseWebsocketUrl = urlList[0] + "&" + urlList[2];
             System.out.println(firebaseWebsocketUrl);
         }
-
         // intro
         String intro = "\n" +
                 ChatColor.BLUE + "(_)| |                                           \n" +

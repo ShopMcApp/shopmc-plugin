@@ -41,7 +41,9 @@ public class WebSocket extends WebSocketClient {
                     for (Object commandId : json_data.keySet()) {
                         String command = json_data.get(commandId).toString();
                         send("{\"t\":\"d\",\"d\":{\"r\":1,\"a\":\"p\",\"b\":{\"p\":\"/servers/" + plugin.serverId + "/commands/" + plugin.secret + "/" + commandId + "\",\"d\":null}}}");
-                        Bukkit.getScheduler().callSyncMethod( plugin, () -> Bukkit.dispatchCommand( getServer().getConsoleSender(), command ) );
+                        Bukkit.getScheduler().runTask(plugin, () -> {
+                            Bukkit.dispatchCommand( getServer().getConsoleSender(), command );
+                        });
                     }
                 }
             }
@@ -52,7 +54,7 @@ public class WebSocket extends WebSocketClient {
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
-        System.out.println("disconnected");
+        System.out.println("disconnected" + reason);
     }
 
     @Override
