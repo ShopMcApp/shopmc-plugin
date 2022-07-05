@@ -29,7 +29,7 @@ jobs:
       - name: Upload Itemszop plugin
         uses: actions/upload-artifact@v3.0.0
         with:
-          name: Itemszop plugin Built On ${{ matrix.java }} JDK
+          name: Itemszop plugin Built On JDK ${{ matrix.java }}
           path: "build/libs/itemszop*.jar"
       - uses: dev-drprasad/delete-tag-and-release@v0.2.0
         with:

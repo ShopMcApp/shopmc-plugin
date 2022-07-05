@@ -5,53 +5,55 @@ import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import java.net.URI;
 import java.util.Objects;
 
-import static org.bukkit.Bukkit.*;
+import static org.bukkit.Bukkit.getLogger;
+import static org.bukkit.Bukkit.getServer;
 
 public class WebSocket extends WebSocketClient {
-    Itemszop plugin;
+
+    private static Itemszop plugin = Itemszop.getInstance();
 
     public WebSocket(Itemszop plugin, URI serverUri) {
         super(serverUri);
-        this.plugin = plugin;
+        WebSocket.plugin = plugin;
     }
 
 
     @Override
     public void onOpen(ServerHandshake handshakedata) {
-        getLogger().info("Connected");
-        send("{\"t\":\"d\",\"d\":{\"r\":1,\"a\":\"q\",\"b\":{\"p\":\"/servers/" + Settings.IMP.SERVERID + "/commands/" + Settings.IMP.SECRET + "\",\"h\":\"\"}}}");
+        send("{\"t\":\"d\",\"d\":{\"r\":1,\"a\":\"q\",\"b\":{\"p\":\"/servers/" + plugin.serverId + "/commands/" + plugin.secret + "\",\"h\":\"\"}}}");
+        getLogger().info("§aPołączono");
     }
 
     @Override
     public void onMessage(String message) {
-        try{
+        try {
             JSONParser parser = new JSONParser();
             JSONObject json = (JSONObject) parser.parse(message);
-            if(Objects.equals(json.get("t").toString(), "d")){
+            if (Objects.equals(json.get("t").toString(), "d")) {
                 JSONObject json_data = (JSONObject) parser.parse(json.get("d").toString());
                 json_data = (JSONObject) parser.parse(json_data.get("b").toString());
-                if (json_data.get("d") != null && json_data.get("d").toString().length()>0){
+                if (json_data.get("d") != null && json_data.get("d").toString().length() > 0) {
                     json_data = (JSONObject) parser.parse(json_data.get("d").toString());
                     for (Object commandId : json_data.keySet()) {
                         String command = json_data.get(commandId).toString();
-                        send("{\"t\":\"d\",\"d\":{\"r\":1,\"a\":\"p\",\"b\":{\"p\":\"/servers/" + Settings.IMP.SERVERID + "/commands/" + Settings.IMP.SECRET + "/" + commandId + "\",\"d\":null}}}");
-                        Bukkit.getScheduler().callSyncMethod(plugin, () -> Bukkit.dispatchCommand( getServer().getConsoleSender(), command ));
+                        send("{\"t\":\"d\",\"d\":{\"r\":1,\"a\":\"p\",\"b\":{\"p\":\"/servers/" + plugin.serverId + "/commands/" + plugin.secret + "/" + commandId + "\",\"d\":null}}}");
+                        Bukkit.getScheduler().runTask(plugin, () -> Bukkit.dispatchCommand(getServer().getConsoleSender(), command));
+
                     }
                 }
             }
-        } catch (ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
-        getLogger().info("disconnected");
+        getLogger().info("§cRozłączono");
     }
 
     @Override

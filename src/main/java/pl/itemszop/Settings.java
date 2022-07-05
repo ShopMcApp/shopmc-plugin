@@ -10,10 +10,9 @@ public class Settings extends YamlConfig {
     public String PREFIX = "<green>Itemszop <gray>>»";
 
     public String NO_PERMISSION = "<red>Brak uprawnień.";
+
+    public String CHECK_CONSOLE = "<yellow>Sprawdź konsolę aby zobaczyć status połączenia ze sklepem.";
     public String KEY = "";
-    public String FIREBASEWEBSOCKETURL= "";
-    public String SERVERID = "";
-    public String SECRET = "";
 
     @Comment({
             "Available serializers:",

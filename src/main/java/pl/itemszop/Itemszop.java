@@ -16,53 +16,62 @@ import java.util.Objects;
 
 public class Itemszop extends JavaPlugin {
     WebSocket ws;
-    Itemszop plugin;
     private static Serializer serializer;
-    String key = Settings.IMP.KEY;
-    String firebaseWebsocketUrl = Settings.IMP.FIREBASEWEBSOCKETURL;
-    String serverId = Settings.IMP.SERVERID;
-    String secret = Settings.IMP.SECRET;
+    private static Itemszop instance;
+    public static Itemszop getInstance() {
+        return instance;
+    }
+    String firebaseWebsocketUrl;
+    String serverId;
+    String secret;
 
     @Override
     public void onEnable() {
-        registerCommands();
-        plugin = this;
         Settings.IMP.reload(new File(this.getDataFolder(), "config.yml"), Settings.IMP.PREFIX);
-        // decode config key
-        byte[] decoded = Base64.getDecoder().decode(key);
-        String decodedStr = new String(decoded, StandardCharsets.UTF_8);
-        String[] stringList = decodedStr.split("@");
-        secret = stringList[0];
-        firebaseWebsocketUrl = stringList[1];
-        serverId = stringList[2];
+        instance = this;
+        try {
+            registerCommands();
+            connectToFirebase();
+            // decode config key
+            byte[] decoded = Base64.getDecoder().decode(Settings.IMP.KEY);
+            String decodedStr = new String(decoded, StandardCharsets.UTF_8);
+            String[] stringList = decodedStr.split("@");
+            secret = stringList[0];
+            firebaseWebsocketUrl = stringList[1];
+            serverId = stringList[2];
 
+            if (Settings.IMP.KEY == null) {
+                getLogger().warning("Musisz wpisać klucz w pliku konfiguracyjnym, aby plugin mógł działać.");
+            }
 
-        // cut websocket url param
-        int index = firebaseWebsocketUrl.indexOf("&s=");
-        if(index != -1) {
-            String[] urlList = firebaseWebsocketUrl.split("&");
-            firebaseWebsocketUrl = urlList[0] + "&" + urlList[2];
-            getLogger().info(firebaseWebsocketUrl);
+            // cut websocket url param
+            int index = firebaseWebsocketUrl.indexOf("&s=");
+            if(index != -1){
+                String[] urlList = firebaseWebsocketUrl.split("&");
+                firebaseWebsocketUrl = urlList[0] + "&" + urlList[2];
+                getLogger().info(firebaseWebsocketUrl);
+            }
+            // Startup message
+            getLogger().info(this.getName() + this.getDescription().getVersion() + " by " + this.getDescription().getAuthors() + "\n Plugin do sklepu serwera - https://github.com/michaljaz/itemszop-plugin");
+
+            ComponentSerializer<Component, Component, String> serializer = Serializers.valueOf(Settings.IMP.SERIALIZER).getSerializer();
+            if (serializer == null) {
+                this.getLogger().info("The specified serializer could not be founded, using default. (LEGACY_AMPERSAND)");
+                setSerializer(new Serializer(Objects.requireNonNull(Serializers.LEGACY_AMPERSAND.getSerializer())));
+            } else {
+                setSerializer(new Serializer(serializer));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        // Startup message
-        getLogger().info(this.getName() + this.getDescription().getVersion() + " by " + this.getDescription().getAuthors() + "\n Plugin do sklepu serwera - https://github.com/michaljaz/itemszop-plugin");
-
-        ComponentSerializer<Component, Component, String> serializer = Serializers.valueOf(Settings.IMP.SERIALIZER).getSerializer();
-        if (serializer == null) {
-            this.getLogger().info("The specified serializer could not be founded, using default. (LEGACY_AMPERSAND)");
-            setSerializer(new Serializer(Objects.requireNonNull(Serializers.LEGACY_AMPERSAND.getSerializer())));
-        } else {
-            setSerializer(new Serializer(serializer));
-        }
-
-
-        //connect to firebase
+    }
+    public void connectToFirebase() {
         new java.util.Timer().schedule(
                 new java.util.TimerTask() {
                     @Override
                     public void run() {
                         try {
-                            ws = new WebSocket(plugin, new URI(firebaseWebsocketUrl));
+                            ws = new WebSocket(instance, new URI(firebaseWebsocketUrl));
                             ws.connect();
                         } catch (URISyntaxException e) {
                             e.printStackTrace();
