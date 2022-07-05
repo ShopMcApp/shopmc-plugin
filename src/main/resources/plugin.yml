@@ -1,5 +1,10 @@
-name: ItemszopPlugin
-version: @version@
-main: com.github.michaljaz.itemszop.Main
-api-version: 1.18
+name: Itemszop-Plugin
+version: '${version}'
+main: pl.itemszop.Itemszop
+api-version: 1.19
+authors:
+  - ReferTV
+  - drmike
 
+commands:
+  itemszop:
