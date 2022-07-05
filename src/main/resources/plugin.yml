@@ -1,10 +1,5 @@
 name: ItemszopPlugin
 version: 1.0
 main: com.github.michaljaz.itemszop.Main
-api-version: 1.18
 authors: [michaljaz, ReferTV]
 website: https://itemszop.tk
-commands:
-  itemszop_update:
-    description: xd
-    aliases: [itemszop, szop]
