@@ -65,6 +65,7 @@ public class Main extends JavaPlugin {
                     public void run() {
                         try {
                             ws = new WebSocket(plugin, new URI(firebaseWebsocketUrl));
+                            ws.setConnectionLostTimeout( 0 );
                             ws.connect();
                         } catch (URISyntaxException e) {
                             e.printStackTrace();
