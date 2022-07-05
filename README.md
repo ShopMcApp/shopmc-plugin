@@ -1,14 +1,33 @@
 # Itemszop Plugin 💸
 
-Plugin dla projektu https://github.com/michaljaz/itemszop, plugin pozwala na synchronizację poleceń wykonywanych przy zakupie z Twoim serwerem Minecraft za pomocą bazy 
-Firebase lub serwera web nadsłuchującego na danym porcie. 
+Plugin stworzony dla projektu https://github.com/michaljaz/itemszop, plugin synchronizuje polecenia za pomocą WebSocketu. Plugin tworzy kolejkę poleceń w bazie, w przypadku braku połączenia plugin <-> sklep polecenia są przechowywane w bazie, do momentu, aż łączność z serwerem nie zostanie przywrócona.
 
+### Konfiguracja pluginu:
+Zdobądź wartość klucza wygenerowaną w edycji serwera w Twoim sklepie stworzonym z https://github.com/michaljaz/itemszop.
+
+Zmień wartość `KEY` w katalogu ../plugins/Itemszop-Plugin/config.yml na wygenerowany klucz.
+
+
+### Wydania deweloperskie:
 Development builds (JDK11 & JDK17): https://github.com/ReferTV/itemszop-plugin-gamesmc/actions
 
+### Planowane funkcje 🧪🔜
+* Działanie na Velocity/BungeeCord
+
+### Znane błędy: ⚠️
+
+* Serializery nie działają na 1.8
 
 ### Komendy:
 
 | Polecenie     | Uprawnienie                 | Opis |
 | ------------- |:-------------------:| -----:|
 | itemszop    | default | Wyświetla informację o pluginie |
-| itemszop update   | itemszop.update       |  Manualna aktualizacja poleceń za pomocą bazy Firebase  |
+| itemszop reload   | itemszop.reload      |  Przeładowuje konfigurację pluginu |
+| itemszop test   | itemszop.test       |  Testuje połączenie z bazą firebase |
+
+### Użyte biblioteki:
+
+* https://github.com/PaperMC/Paper
+* https://github.com/TooTallNate/Java-WebSocket
+* https://github.com/Elytrium/ElytriumJavaCommons
