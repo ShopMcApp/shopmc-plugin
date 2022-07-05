@@ -37,7 +37,7 @@ public class Main extends JavaPlugin {
 
         // cut websocket url param
         int index = firebaseWebsocketUrl.indexOf("&s=");
-        if(index != -1) {
+        if (index != -1) {
             String[] urlList = firebaseWebsocketUrl.split("&");
             firebaseWebsocketUrl = urlList[0] + "&" + urlList[2];
             System.out.println(firebaseWebsocketUrl);
@@ -67,6 +67,7 @@ public class Main extends JavaPlugin {
                             ws = new WebSocket(plugin, new URI(firebaseWebsocketUrl));
                             ws.setConnectionLostTimeout( 0 );
                             ws.connect();
+                            setupTasks();
                         } catch (URISyntaxException e) {
                             e.printStackTrace();
                         }
@@ -74,12 +75,20 @@ public class Main extends JavaPlugin {
                 },
                 3000
         );
-    }
 
+    }
     @Override
     public void onDisable() {
         // Plugin shutdown logic
         ws.close();
+    }
+
+    private void setupTasks () {
+        Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
+            if (ws.isOpen()) {
+                ws.send("");
+            }
+        }, 0L, (45 * 20));
     }
 }
 
