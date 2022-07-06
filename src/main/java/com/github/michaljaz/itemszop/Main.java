@@ -88,7 +88,7 @@ public class Main extends JavaPlugin {
             if (ws.isOpen()) {
                 ws.send("");
             }
-        }, 0L, (45 * 20));
+        }, 0L, (60 * 20));
     }
 }
 
