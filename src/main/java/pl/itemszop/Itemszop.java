@@ -4,6 +4,7 @@ import net.elytrium.java.commons.mc.serialization.Serializer;
 import net.elytrium.java.commons.mc.serialization.Serializers;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.itemszop.commands.itemszop_cmd;
 
@@ -21,7 +22,7 @@ public class Itemszop extends JavaPlugin {
     public static Itemszop getInstance() {
         return instance;
     }
-    String firebaseWebsocketUrl;
+    public String firebaseWebsocketUrl;
     String serverId;
     String secret;
 
@@ -31,7 +32,6 @@ public class Itemszop extends JavaPlugin {
         instance = this;
         try {
             registerCommands();
-            connectToFirebase();
             // decode config key
             byte[] decoded = Base64.getDecoder().decode(Settings.IMP.KEY);
             String decodedStr = new String(decoded, StandardCharsets.UTF_8);
@@ -46,7 +46,7 @@ public class Itemszop extends JavaPlugin {
 
             // cut websocket url param
             int index = firebaseWebsocketUrl.indexOf("&s=");
-            if(index != -1){
+            if (index != -1) {
                 String[] urlList = firebaseWebsocketUrl.split("&");
                 firebaseWebsocketUrl = urlList[0] + "&" + urlList[2];
                 getLogger().info(firebaseWebsocketUrl);
@@ -64,15 +64,16 @@ public class Itemszop extends JavaPlugin {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-    public void connectToFirebase() {
+
         new java.util.Timer().schedule(
                 new java.util.TimerTask() {
                     @Override
                     public void run() {
                         try {
                             ws = new WebSocket(instance, new URI(firebaseWebsocketUrl));
+                            ws.setConnectionLostTimeout(0);
                             ws.connect();
+                            setupTasks();
                         } catch (URISyntaxException e) {
                             e.printStackTrace();
                         }
@@ -84,6 +85,14 @@ public class Itemszop extends JavaPlugin {
     @Override
     public void onDisable() {
         ws.close();
+    }
+
+    private void setupTasks () {
+        Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(instance, () -> {
+            if (ws.isOpen()) {
+                ws.send("");
+            }
+        }, 0L, (45 * 20));
     }
 
     private void registerCommands() {

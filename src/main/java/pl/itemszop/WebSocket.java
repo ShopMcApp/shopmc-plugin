@@ -53,7 +53,7 @@ public class WebSocket extends WebSocketClient {
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
-        getLogger().info("§cRozłączono");
+        getLogger().info("§cRozłączono" + reason);
     }
 
     @Override

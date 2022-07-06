@@ -4,10 +4,15 @@ import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 import pl.itemszop.Itemszop;
 import pl.itemszop.Settings;
+import pl.itemszop.WebSocket;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class itemszop_cmd extends CommandBase {
 
     private static final Itemszop plugin = Itemszop.getInstance();
+    WebSocket ws;
 
     @Override
     protected boolean onCommand(Player p, Command cmd, String label, String[] args) {
@@ -38,7 +43,13 @@ public class itemszop_cmd extends CommandBase {
             }
             case "test" -> {
                 try {
-                    Itemszop.getInstance().connectToFirebase();
+                    try {
+                        ws = new WebSocket(plugin, new URI(Itemszop.getInstance().firebaseWebsocketUrl));
+                        ws.setConnectionLostTimeout(0);
+                        ws.connect();
+                    } catch (URISyntaxException e) {
+                        e.printStackTrace();
+                    }
                     p.sendMessage(Itemszop.getSerializer().deserialize(Settings.IMP.CHECK_CONSOLE));
                 } catch (Exception e) {
                     e.printStackTrace();
