@@ -8,6 +8,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import java.net.URI;
 import java.util.Objects;
+
 import static org.bukkit.Bukkit.getServer;
 
 public class WebSocket extends WebSocketClient {
@@ -21,7 +22,8 @@ public class WebSocket extends WebSocketClient {
 
     @Override
     public void onOpen(ServerHandshake handshakedata) {
-        System.out.println("Connected");
+        System.out.println("Connected to websocket");
+
         send("{\"t\":\"d\",\"d\":{\"r\":1,\"a\":\"q\",\"b\":{\"p\":\"/servers/" + plugin.serverId + "/commands/" + plugin.secret + "\",\"h\":\"\"}}}");
     }
 
@@ -52,6 +54,10 @@ public class WebSocket extends WebSocketClient {
     @Override
     public void onClose(int code, String reason, boolean remote) {
         System.out.println("disconnected: " + reason);
+
+        if (code != 1000) {
+            new WebSocketReconnectTask(plugin, this).runTaskTimer(plugin, 0L, (10 * 20 ));
+        }
     }
 
     @Override
