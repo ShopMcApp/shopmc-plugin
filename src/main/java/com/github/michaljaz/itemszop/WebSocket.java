@@ -6,11 +6,8 @@ import org.java_websocket.handshake.ServerHandshake;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
 import java.net.URI;
 import java.util.Objects;
-
-import static org.bukkit.Bukkit.getScheduler;
 import static org.bukkit.Bukkit.getServer;
 
 public class WebSocket extends WebSocketClient {
@@ -54,7 +51,7 @@ public class WebSocket extends WebSocketClient {
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
-        System.out.println("disconnected" + reason);
+        System.out.println("disconnected: " + reason);
     }
 
     @Override
