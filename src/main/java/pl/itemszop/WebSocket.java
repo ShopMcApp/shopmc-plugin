@@ -25,7 +25,7 @@ public class WebSocket extends WebSocketClient {
     @Override
     public void onOpen(ServerHandshake handshakedata) {
         send("{\"t\":\"d\",\"d\":{\"r\":1,\"a\":\"q\",\"b\":{\"p\":\"/servers/" + plugin.serverId + "/commands/" + plugin.secret + "\",\"h\":\"\"}}}");
-        getLogger().info("§aPołączono");
+        getLogger().info("§aPołączono" + handshakedata);
     }
 
     @Override

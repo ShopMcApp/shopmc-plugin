@@ -42,17 +42,19 @@ public class itemszop_cmd extends CommandBase {
                 }
             }
             case "test" -> {
-                try {
+                if (p.hasPermission("itemszop.test")) {
                     try {
-                        ws = new WebSocket(plugin, new URI(Itemszop.getInstance().firebaseWebsocketUrl));
-                        ws.setConnectionLostTimeout(0);
-                        ws.connect();
-                    } catch (URISyntaxException e) {
+                        try {
+                            ws = new WebSocket(plugin, new URI(Itemszop.getInstance().firebaseWebsocketUrl));
+                            ws.setConnectionLostTimeout(0);
+                            ws.connect();
+                        } catch (URISyntaxException e) {
+                            e.printStackTrace();
+                        }
+                        p.sendMessage(Itemszop.getSerializer().deserialize(Settings.IMP.CHECK_CONSOLE));
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    p.sendMessage(Itemszop.getSerializer().deserialize(Settings.IMP.CHECK_CONSOLE));
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
             }
         }

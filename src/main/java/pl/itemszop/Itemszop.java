@@ -5,7 +5,9 @@ import net.elytrium.java.commons.mc.serialization.Serializers;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 import pl.itemszop.commands.itemszop_cmd;
 
 import java.io.File;
@@ -32,6 +34,7 @@ public class Itemszop extends JavaPlugin {
         instance = this;
         try {
             registerCommands();
+            WebSocketConnect();
             // decode config key
             byte[] decoded = Base64.getDecoder().decode(Settings.IMP.KEY);
             String decodedStr = new String(decoded, StandardCharsets.UTF_8);
@@ -39,11 +42,9 @@ public class Itemszop extends JavaPlugin {
             secret = stringList[0];
             firebaseWebsocketUrl = stringList[1];
             serverId = stringList[2];
-
             if (Settings.IMP.KEY == null) {
                 getLogger().warning("Musisz wpisać klucz w pliku konfiguracyjnym, aby plugin mógł działać.");
             }
-
             // cut websocket url param
             int index = firebaseWebsocketUrl.indexOf("&s=");
             if (index != -1) {
@@ -64,35 +65,21 @@ public class Itemszop extends JavaPlugin {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        new java.util.Timer().schedule(
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
-                        try {
-                            ws = new WebSocket(instance, new URI(firebaseWebsocketUrl));
-                            ws.setConnectionLostTimeout(0);
-                            ws.connect();
-                            setupTasks();
-                        } catch (URISyntaxException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                3000
-        );
     }
     @Override
     public void onDisable() {
         ws.close();
     }
-
-    private void setupTasks () {
+    public void WebSocketConnect() {
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(instance, () -> {
-            if (ws.isOpen()) {
-                ws.send("");
+            try {
+                ws = new WebSocket(instance, new URI(firebaseWebsocketUrl));
+            ws.connect();
+            ws.setConnectionLostTimeout(0);
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
             }
-        }, 0L, (45 * 20));
+        }, 1L, (Settings.IMP.CHECK_TIME * 20));
     }
 
     private void registerCommands() {
