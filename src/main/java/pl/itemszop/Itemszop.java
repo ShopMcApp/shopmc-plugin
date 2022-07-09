@@ -4,37 +4,33 @@ import net.elytrium.java.commons.mc.serialization.Serializer;
 import net.elytrium.java.commons.mc.serialization.Serializers;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitTask;
 import pl.itemszop.commands.itemszop_cmd;
 
 import java.io.File;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Objects;
 
 public class Itemszop extends JavaPlugin {
-    WebSocket ws;
     private static Serializer serializer;
     private static Itemszop instance;
+
+    public static WebSocket socket;
     public static Itemszop getInstance() {
         return instance;
     }
     public String firebaseWebsocketUrl;
     String serverId;
     String secret;
-
     @Override
     public void onEnable() {
         Settings.IMP.reload(new File(this.getDataFolder(), "config.yml"), Settings.IMP.PREFIX);
         instance = this;
         try {
-            registerCommands();
             WebSocketConnect();
+            registerCommands();
             // decode config key
             byte[] decoded = Base64.getDecoder().decode(Settings.IMP.KEY);
             String decodedStr = new String(decoded, StandardCharsets.UTF_8);
@@ -53,8 +49,15 @@ public class Itemszop extends JavaPlugin {
                 getLogger().info(firebaseWebsocketUrl);
             }
             // Startup message
-            getLogger().info(this.getName() + this.getDescription().getVersion() + " by " + this.getDescription().getAuthors() + "\n Plugin do sklepu serwera - https://github.com/michaljaz/itemszop-plugin");
-
+            getLogger().info(" _                                         \n" +
+                    "| |  _                                     \n" +
+                    "| |_| |_ _____ ____   ___ _____ ___  ____  \n" +
+                    "| (_   _) ___ |    \\ /___|___  ) _ \\|  _ \\ \n" +
+                    "| | | |_| ____| | | |___ |/ __/ |_| | |_| |\n" +
+                    "|_|  \\__)_____)_|_|_(___/(_____)___/|  __/ \n" +
+                    "                                    |_|  " + this.getDescription().getVersion() + "\n" +
+                    this.getName() + " by " + this.getDescription().getAuthors() + "\n" +
+                    "Id serwera " + serverId);
             ComponentSerializer<Component, Component, String> serializer = Serializers.valueOf(Settings.IMP.SERIALIZER).getSerializer();
             if (serializer == null) {
                 this.getLogger().info("The specified serializer could not be founded, using default. (LEGACY_AMPERSAND)");
@@ -66,22 +69,19 @@ public class Itemszop extends JavaPlugin {
             e.printStackTrace();
         }
     }
-    @Override
-    public void onDisable() {
-        ws.close();
-    }
-    public void WebSocketConnect() {
-        Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(instance, () -> {
-            try {
-                ws = new WebSocket(instance, new URI(firebaseWebsocketUrl));
-            ws.connect();
-            ws.setConnectionLostTimeout(0);
-            } catch (URISyntaxException e) {
-                throw new RuntimeException(e);
-            }
-        }, 1L, (Settings.IMP.CHECK_TIME * 20));
-    }
 
+    @Override
+    public void onDisable() { socket.close(); }
+
+    public void WebSocketConnect() {
+        try {
+            socket = new WebSocket(new URI(firebaseWebsocketUrl));
+            socket.connect();
+            socket.setConnectionLostTimeout(0);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
     private void registerCommands() {
         new itemszop_cmd().register(getCommand("itemszop"));
     }

@@ -1,9 +1,14 @@
 name: Itemszop-Plugin
 version: '${version}'
 main: pl.itemszop.Itemszop
+prefix: Itemszop-plugin
+website: sklep.gamesmc.pl
+
+api-version: 1.19
 authors:
   - ReferTV
   - drmike
+  - MrPiesel
 
 commands:
   itemszop:

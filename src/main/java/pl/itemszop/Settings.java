@@ -12,7 +12,7 @@ public class Settings extends YamlConfig {
     public String NO_PERMISSION = "<red>Brak uprawnień.";
 
     @Comment("W sekundach")
-    public Integer CHECK_TIME = 180;
+    public Integer CHECK_TIME = 120;
 
     public String CHECK_CONSOLE = "<yellow>Sprawdź konsolę aby zobaczyć status połączenia ze sklepem.";
     public String KEY = "";

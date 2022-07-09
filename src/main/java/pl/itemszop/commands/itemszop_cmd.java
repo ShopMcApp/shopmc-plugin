@@ -9,10 +9,11 @@ import pl.itemszop.WebSocket;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import static pl.itemszop.Itemszop.socket;
+
 public class itemszop_cmd extends CommandBase {
 
     private static final Itemszop plugin = Itemszop.getInstance();
-    WebSocket ws;
 
     @Override
     protected boolean onCommand(Player p, Command cmd, String label, String[] args) {
@@ -45,9 +46,9 @@ public class itemszop_cmd extends CommandBase {
                 if (p.hasPermission("itemszop.test")) {
                     try {
                         try {
-                            ws = new WebSocket(plugin, new URI(Itemszop.getInstance().firebaseWebsocketUrl));
-                            ws.setConnectionLostTimeout(0);
-                            ws.connect();
+                            socket = new WebSocket(new URI(Itemszop.getInstance().firebaseWebsocketUrl));
+                            socket.setConnectionLostTimeout(0);
+                            socket.connect();
                         } catch (URISyntaxException e) {
                             e.printStackTrace();
                         }
