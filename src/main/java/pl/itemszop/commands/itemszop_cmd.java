@@ -44,7 +44,6 @@ public class itemszop_cmd extends CommandBase {
             }
             case "test" -> {
                 if (p.hasPermission("itemszop.test")) {
-                    try {
                         try {
                             socket = new WebSocket(new URI(Itemszop.getInstance().firebaseWebsocketUrl));
                             socket.setConnectionLostTimeout(0);
@@ -53,9 +52,6 @@ public class itemszop_cmd extends CommandBase {
                             e.printStackTrace();
                         }
                         p.sendMessage(Itemszop.getSerializer().deserialize(Settings.IMP.CHECK_CONSOLE));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
                 }
             }
         }

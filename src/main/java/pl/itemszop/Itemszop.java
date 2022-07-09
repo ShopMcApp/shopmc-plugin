@@ -26,10 +26,19 @@ public class Itemszop extends JavaPlugin {
     String secret;
     @Override
     public void onEnable() {
+        // Startup message
+        getLogger().info(" _                                         \n" +
+                "| |  _                                     \n" +
+                "| |_| |_ _____ ____   ___ _____ ___  ____  \n" +
+                "| (_   _) ___ |    \\ /___|___  ) _ \\|  _ \\ \n" +
+                "| | | |_| ____| | | |___ |/ __/ |_| | |_| |\n" +
+                "|_|  \\__)_____)_|_|_(___/(_____)___/|  __/ \n" +
+                "                                    |_|  " + this.getDescription().getVersion() + "\n" +
+                this.getName() + " by " + this.getDescription().getAuthors() + "\n" +
+                "Id serwera " + serverId);
         Settings.IMP.reload(new File(this.getDataFolder(), "config.yml"), Settings.IMP.PREFIX);
         instance = this;
         try {
-            WebSocketConnect();
             registerCommands();
             // decode config key
             byte[] decoded = Base64.getDecoder().decode(Settings.IMP.KEY);
@@ -48,16 +57,6 @@ public class Itemszop extends JavaPlugin {
                 firebaseWebsocketUrl = urlList[0] + "&" + urlList[2];
                 getLogger().info(firebaseWebsocketUrl);
             }
-            // Startup message
-            getLogger().info(" _                                         \n" +
-                    "| |  _                                     \n" +
-                    "| |_| |_ _____ ____   ___ _____ ___  ____  \n" +
-                    "| (_   _) ___ |    \\ /___|___  ) _ \\|  _ \\ \n" +
-                    "| | | |_| ____| | | |___ |/ __/ |_| | |_| |\n" +
-                    "|_|  \\__)_____)_|_|_(___/(_____)___/|  __/ \n" +
-                    "                                    |_|  " + this.getDescription().getVersion() + "\n" +
-                    this.getName() + " by " + this.getDescription().getAuthors() + "\n" +
-                    "Id serwera " + serverId);
             ComponentSerializer<Component, Component, String> serializer = Serializers.valueOf(Settings.IMP.SERIALIZER).getSerializer();
             if (serializer == null) {
                 this.getLogger().info("The specified serializer could not be founded, using default. (LEGACY_AMPERSAND)");
@@ -68,20 +67,12 @@ public class Itemszop extends JavaPlugin {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        WebSocketConnect();
     }
 
     @Override
     public void onDisable() { socket.close(); }
 
-    public void WebSocketConnect() {
-        try {
-            socket = new WebSocket(new URI(firebaseWebsocketUrl));
-            socket.connect();
-            socket.setConnectionLostTimeout(0);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
     private void registerCommands() {
         new itemszop_cmd().register(getCommand("itemszop"));
     }
@@ -94,6 +85,16 @@ public class Itemszop extends JavaPlugin {
     }
     public static Serializer getSerializer() {
         return serializer;
+    }
+
+    public void WebSocketConnect() {
+        try {
+            socket = new WebSocket(new URI(firebaseWebsocketUrl));
+            socket.connect();
+            socket.setConnectionLostTimeout(0);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
