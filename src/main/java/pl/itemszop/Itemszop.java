@@ -16,7 +16,6 @@ import java.util.Objects;
 public class Itemszop extends JavaPlugin {
     private static Serializer serializer;
     private static Itemszop instance;
-
     public static WebSocket socket;
     public static Itemszop getInstance() {
         return instance;
@@ -27,7 +26,7 @@ public class Itemszop extends JavaPlugin {
     @Override
     public void onEnable() {
         // Startup message
-        getLogger().info("\n + _                                         \n" +
+        getLogger().info("\n _                                         \n" +
                 "| |  _                                     \n" +
                 "| |_| |_ _____ ____   ___ _____ ___  ____  \n" +
                 "| (_   _) ___ |    \\ /___|___  ) _ \\|  _ \\ \n" +
@@ -68,14 +67,12 @@ public class Itemszop extends JavaPlugin {
         }
         WebSocketConnect();
     }
-
     @Override
     public void onDisable() { socket.close(); }
 
     private void registerCommands() {
         new itemszop_cmd().register(getCommand("itemszop"));
     }
-
     public void reloadPlugin() {
         Settings.IMP.reload(new File(this.getDataFolder().toPath().toFile().getAbsoluteFile(), "config.yml"));
     }
@@ -85,7 +82,6 @@ public class Itemszop extends JavaPlugin {
     public static Serializer getSerializer() {
         return serializer;
     }
-
     public void WebSocketConnect() {
         try {
             socket = new WebSocket(new URI(firebaseWebsocketUrl));
@@ -95,5 +91,4 @@ public class Itemszop extends JavaPlugin {
             throw new RuntimeException(e);
         }
     }
-
 }

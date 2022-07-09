@@ -38,7 +38,7 @@ public class itemszop_cmd extends CommandBase {
                         e.printStackTrace();
                     }
                 } else {
-                    p.sendMessage(Itemszop.getInstance().getSerializer().deserialize(Settings.IMP.NO_PERMISSION));
+                    p.sendMessage(Itemszop.getSerializer().deserialize(Settings.IMP.NO_PERMISSION));
                     return false;
                 }
             }

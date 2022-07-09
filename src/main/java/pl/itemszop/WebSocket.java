@@ -5,14 +5,14 @@ import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import java.net.URI;
 
+import java.net.URI;
 import java.util.Objects;
 
 import static org.bukkit.Bukkit.getServer;
 
 public class WebSocket extends WebSocketClient {
-    private static Itemszop plugin = Itemszop.getInstance();
+    private static final Itemszop plugin = Itemszop.getInstance();
     public WebSocket(URI serverUri) {
         super(serverUri);
     }
@@ -42,7 +42,6 @@ public class WebSocket extends WebSocketClient {
             e.printStackTrace();
         }
     }
-
     @Override
     public void onClose(int code, String reason, boolean remote) {
         if (Settings.IMP.DEBUG == true) { plugin.getLogger().info("Rozłączono z WebSocketem: " + reason); }
