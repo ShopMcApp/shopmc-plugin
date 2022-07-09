@@ -19,7 +19,7 @@ public class WebSocket extends WebSocketClient {
     @Override
     public void onOpen(ServerHandshake handshakedata) {
         send("{\"t\":\"d\",\"d\":{\"r\":1,\"a\":\"q\",\"b\":{\"p\":\"/servers/" + plugin.serverId + "/commands/" + plugin.secret + "\",\"h\":\"\"}}}");
-        plugin.getLogger().info("Połączono z " + plugin.serverId);
+        if (Settings.IMP.DEBUG == true) { plugin.getLogger().info("Połączono z " + plugin.serverId); }
     }
     @Override
     public void onMessage(String message) {
@@ -45,7 +45,7 @@ public class WebSocket extends WebSocketClient {
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
-        plugin.getLogger().info("Rozłączono z WebSocketem: " + reason);
+        if (Settings.IMP.DEBUG == true) { plugin.getLogger().info("Rozłączono z WebSocketem: " + reason); }
         if (code != 1000) {
             new WebSocketReconnectTask().runTaskTimer(plugin, 0L, (Settings.IMP.CHECK_TIME * 20 ));
         }

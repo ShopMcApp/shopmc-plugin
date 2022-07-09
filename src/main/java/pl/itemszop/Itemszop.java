@@ -27,15 +27,14 @@ public class Itemszop extends JavaPlugin {
     @Override
     public void onEnable() {
         // Startup message
-        getLogger().info(" _                                         \n" +
+        getLogger().info("\n + _                                         \n" +
                 "| |  _                                     \n" +
                 "| |_| |_ _____ ____   ___ _____ ___  ____  \n" +
                 "| (_   _) ___ |    \\ /___|___  ) _ \\|  _ \\ \n" +
                 "| | | |_| ____| | | |___ |/ __/ |_| | |_| |\n" +
                 "|_|  \\__)_____)_|_|_(___/(_____)___/|  __/ \n" +
                 "                                    |_|  " + this.getDescription().getVersion() + "\n" +
-                this.getName() + " by " + this.getDescription().getAuthors() + "\n" +
-                "Id serwera " + serverId);
+                this.getName() + " by " + this.getDescription().getAuthors() + "\n");
         Settings.IMP.reload(new File(this.getDataFolder(), "config.yml"), Settings.IMP.PREFIX);
         instance = this;
         try {
