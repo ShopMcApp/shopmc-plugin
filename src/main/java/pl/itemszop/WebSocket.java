@@ -28,10 +28,8 @@ public class WebSocket extends WebSocketClient {
             JsonElement data = json.get("d").getAsJsonObject().get("b").getAsJsonObject().get("d");
             if (data.isJsonObject()) {
                 for (Object entry : data.getAsJsonObject().entrySet()) {
-                    String commandId = entry.toString().split("=")[0];
-                    String command = data.getAsJsonObject().get(commandId).getAsString();
-                    send("{\"t\":\"d\",\"d\":{\"r\":1,\"a\":\"p\",\"b\":{\"p\":\"/servers/" + plugin.serverId + "/commands/" + plugin.secret + "/" + commandId + "\",\"d\":null}}}");
-                    Bukkit.getScheduler().runTask(plugin, () -> Bukkit.dispatchCommand(getServer().getConsoleSender(), command));
+                    send("{\"t\":\"d\",\"d\":{\"r\":1,\"a\":\"p\",\"b\":{\"p\":\"/servers/" + plugin.serverId + "/commands/" + plugin.secret + "/" + entry.toString().split("=")[0] + "\",\"d\":null}}}");
+                    Bukkit.getScheduler().runTask(plugin, () -> Bukkit.dispatchCommand(getServer().getConsoleSender(), data.getAsJsonObject().get(entry.toString().split("=")[0]).getAsString()));
                 }
             }
         }
