@@ -41,8 +41,9 @@ public class itemszop_cmd extends CommandBase {
             }
             case "reconnect" -> {
                 if (p.hasPermission("itemszop.reconnect")) {
-                Itemszop.getInstance().WebSocketConnect();
-                p.sendMessage(Itemszop.getSerializer().deserialize(Settings.IMP.CHECK_CONSOLE));
+                    socket.close();
+                    Itemszop.getInstance().WebSocketConnect();
+                    p.sendMessage(Itemszop.getSerializer().deserialize(Settings.IMP.CHECK_CONSOLE));
                 }
             }
             case "test" -> {
