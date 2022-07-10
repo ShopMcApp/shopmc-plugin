@@ -5,7 +5,6 @@ import net.elytrium.java.commons.config.YamlConfig;
 public class Settings extends YamlConfig {
     @Ignore
     public static final Settings IMP = new Settings();
-    public String PREFIX = "<green>Itemszop <gray>>»";
     public String NO_PERMISSION = "<red>Brak uprawnień.";
     @Comment("Zmień na true jeśli chcesz sprawdzić czy plugin łączy się z WebSocketem")
     public boolean DEBUG = false;

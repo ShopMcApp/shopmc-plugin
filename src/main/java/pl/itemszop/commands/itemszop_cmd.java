@@ -4,10 +4,6 @@ import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 import pl.itemszop.Itemszop;
 import pl.itemszop.Settings;
-import pl.itemszop.WebSocket;
-
-import java.net.URI;
-import java.net.URISyntaxException;
 
 import static pl.itemszop.Itemszop.socket;
 
@@ -23,6 +19,7 @@ public class itemszop_cmd extends CommandBase {
                     "\n" +
                     "Avaliable subcommands:\n" +
                     "⁜ <click:run_command:/itemszop reload>/itemszop reload</click>\n" +
+                    "⁜ <click:run_command:/itemszop reconnect>/itemszop reconnect</click>\n" +
                     "⁜ <click:run_command:/itemszop test>/itemszop test</click>"));
             return false;
         }
@@ -42,16 +39,19 @@ public class itemszop_cmd extends CommandBase {
                     return false;
                 }
             }
+            case "reconnect" -> {
+                if (p.hasPermission("itemszop.reconnect")) {
+                Itemszop.getInstance().WebSocketConnect();
+                p.sendMessage(Itemszop.getSerializer().deserialize(Settings.IMP.CHECK_CONSOLE));
+                }
+            }
             case "test" -> {
                 if (p.hasPermission("itemszop.test")) {
-                        try {
-                            socket = new WebSocket(new URI(Itemszop.getInstance().firebaseWebsocketUrl));
-                            socket.setConnectionLostTimeout(0);
-                            socket.connect();
-                        } catch (URISyntaxException e) {
-                            e.printStackTrace();
-                        }
-                        p.sendMessage(Itemszop.getSerializer().deserialize(Settings.IMP.CHECK_CONSOLE));
+                    if (!socket.isOpen()) {
+                        p.sendMessage("Nie jesteś połączony z WebSocketem");
+                    } else {
+                        p.sendMessage("Jesteś połączony z WebSocketem");
+                    }
                 }
             }
         }
