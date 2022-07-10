@@ -1,13 +1,13 @@
 package pl.itemszop;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.bukkit.Bukkit;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 
 import java.net.URI;
-import java.util.Objects;
 
 import static org.bukkit.Bukkit.getServer;
 
@@ -23,23 +23,17 @@ public class WebSocket extends WebSocketClient {
     }
     @Override
     public void onMessage(String message) {
-        try {
-            JSONParser parser = new JSONParser();
-            JSONObject json = (JSONObject) parser.parse(message);
-            if (Objects.equals(json.get("t").toString(), "d")) {
-                JSONObject json_data = (JSONObject) parser.parse(json.get("d").toString());
-                json_data = (JSONObject) parser.parse(json_data.get("b").toString());
-                if (json_data.get("d") != null && json_data.get("d").toString().length() > 0) {
-                    json_data = (JSONObject) parser.parse(json_data.get("d").toString());
-                    for (Object commandId : json_data.keySet()) {
-                        String command = json_data.get(commandId).toString();
-                        send("{\"t\":\"d\",\"d\":{\"r\":1,\"a\":\"p\",\"b\":{\"p\":\"/servers/" + plugin.serverId + "/commands/" + plugin.secret + "/" + commandId + "\",\"d\":null}}}");
-                        Bukkit.getScheduler().runTask(plugin, () -> Bukkit.dispatchCommand(getServer().getConsoleSender(), command));
-                    }
+        JsonObject json = new JsonParser().parse(message).getAsJsonObject();
+        if (json.get("t").getAsString().equals("d")) {
+            JsonElement data = json.get("d").getAsJsonObject().get("b").getAsJsonObject().get("d");
+            if (data.isJsonObject()) {
+                for (Object entry : data.getAsJsonObject().entrySet()) {
+                    String commandId = entry.toString().split("=")[0];
+                    String command = data.getAsJsonObject().get(commandId).getAsString();
+                    send("{\"t\":\"d\",\"d\":{\"r\":1,\"a\":\"p\",\"b\":{\"p\":\"/servers/" + plugin.serverId + "/commands/" + plugin.secret + "/" + commandId + "\",\"d\":null}}}");
+                    Bukkit.getScheduler().runTask(plugin, () -> Bukkit.dispatchCommand(getServer().getConsoleSender(), command));
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
     @Override
