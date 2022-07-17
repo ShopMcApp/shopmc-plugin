@@ -24,7 +24,7 @@ public class itemszop_cmd extends CommandBase {
             return false;
         }
         switch(args[0]) {
-            case "reload" -> {
+            case "reload": {
                 if (p.hasPermission("itemszop.reload")) {
                     try {
                         Itemszop.getInstance().reloadPlugin();
@@ -39,14 +39,14 @@ public class itemszop_cmd extends CommandBase {
                     return false;
                 }
             }
-            case "reconnect" -> {
+            case "reconnect": {
                 if (p.hasPermission("itemszop.reconnect")) {
                     socket.close();
                     Itemszop.getInstance().WebSocketConnect();
                     p.sendMessage(Itemszop.getSerializer().deserialize(Settings.IMP.CHECK_CONSOLE));
                 }
             }
-            case "test" -> {
+            case "test": {
                 if (p.hasPermission("itemszop.test")) {
                     if (!socket.isOpen()) {
                         p.sendMessage("Nie jesteś połączony z WebSocketem");
