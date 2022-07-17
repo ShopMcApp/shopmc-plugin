@@ -39,10 +39,8 @@ public class Itemszop extends JavaPlugin {
         registerCommands();
         ComponentSerializer<Component, Component, String> serializer = Serializers.valueOf(Settings.IMP.SERIALIZER).getSerializer();
         if (serializer == null) {
-            this.getLogger().info("The specified serializer could not be founded, using default. (LEGACY_AMPERSAND)");
-            setSerializer(new Serializer(Objects.requireNonNull(Serializers.LEGACY_AMPERSAND.getSerializer())));
-        } else { setSerializer(new Serializer(serializer)); }
-        if (Settings.IMP.KEY == null) { getLogger().warning("Musisz wpisać klucz w pliku konfiguracyjnym, aby plugin mógł działać."); }
+            this.getLogger().info("The specified serializer could not be founded, using default. Please regenerate config");
+        } if (Settings.IMP.KEY == null) { getLogger().warning("Musisz wpisać klucz w pliku konfiguracyjnym, aby plugin mógł działać."); }
         try {
             // decode config key
             byte[] decoded = Base64.getDecoder().decode(Settings.IMP.KEY);
