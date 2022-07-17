@@ -9,8 +9,6 @@ import static pl.itemszop.Itemszop.socket;
 
 public class itemszop_cmd extends CommandBase {
 
-    private static final Itemszop plugin = Itemszop.getInstance();
-
     @Override
     protected boolean onCommand(Player p, Command cmd, String label, String[] args) {
         if (args.length == 0) {

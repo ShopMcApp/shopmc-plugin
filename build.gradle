@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'pl'
-version = '1.0-SNAPSHOT'
+version = '1.0'
 
 compileJava {
     getOptions().setEncoding("UTF-8")
@@ -29,11 +29,16 @@ repositories {
         setName("elytrium-repo")
         setUrl("https://maven.elytrium.net/repo/")
     }
+    maven {
+        name = "sonatype-oss-snapshots1"
+        url = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+    }
 }
 
 dependencies {
     compileOnly 'com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT'
-    implementation("net.elytrium:elytrium-java-commons:1.0.5")
+    implementation 'net.kyori:adventure-api:4.11.0'
+    implementation 'net.elytrium:elytrium-java-commons:1.0.5'
     implementation 'org.java-websocket:Java-WebSocket:1.5.3'
 }
 

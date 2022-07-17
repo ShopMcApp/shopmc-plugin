@@ -20,5 +20,5 @@ public class Settings extends YamlConfig {
             "GSON - \"[{\"text\":\"Example\",\"bold\":true,\"color\":\"red\"},{\"text\":\" \",\"bold\":true},{\"text\":\"Text\",\"bold\":true,\"color\":\"blue\"}]\". (https://minecraft.tools/en/json_text.php/)",
             "GSON_COLOR_DOWNSAMPLING - Same as GSON, but uses downsampling."
     })
-    public String SERIALIZER = "MINIMESSAGE";
+    public String SERIALIZER = "LEGACY_AMPERSAND";
 }

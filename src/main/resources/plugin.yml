@@ -1,5 +1,5 @@
 name: Itemszop-Plugin
-version: '${version}'
+version: '1.0'
 main: pl.itemszop.Itemszop
 prefix: Itemszop-plugin
 website: sklep.gamesmc.pl
