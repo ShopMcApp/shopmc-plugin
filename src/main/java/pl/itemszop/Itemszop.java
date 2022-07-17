@@ -60,7 +60,7 @@ public class Itemszop extends JavaPlugin {
             }
         } catch (Exception e) { e.printStackTrace(); } WebSocketConnect(); }
     @Override
-    public void onDisable() { socket.close(); this.getServer().getMessenger().unregisterOutgoingPluginChannel(this); this.getServer().getMessenger().unregisterIncomingPluginChannel(this); }
+    public void onDisable() { socket.close(); }
     private void registerCommands() { new itemszop_cmd().register(getCommand("itemszop")); }
     private static void setSerializer(Serializer serializer) { Itemszop.serializer = serializer; }
     public static Serializer getSerializer() { return serializer; }

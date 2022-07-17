@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import pl.itemszop.Itemszop;
 import pl.itemszop.Settings;
 
+import static pl.itemszop.Itemszop.getSerializer;
 import static pl.itemszop.Itemszop.socket;
 
 public class itemszop_cmd extends CommandBase {
@@ -12,7 +13,7 @@ public class itemszop_cmd extends CommandBase {
     @Override
     protected boolean onCommand(Player p, Command cmd, String label, String[] args) {
         if (args.length == 0) {
-            p.sendMessage(Itemszop.getSerializer().deserialize("<color:#b6eb17>This server using Itemszop plugin.</color>\n" +
+            p.sendMessage(getSerializer().deserialize("<color:#b6eb17>This server using Itemszop plugin.</color>\n" +
                     "Designed by " + Itemszop.getInstance().getDescription().getAuthors() + "\n" +
                     "\n" +
                     "Available subcommands:\n" +
