@@ -41,12 +41,8 @@ public class Itemszop extends JavaPlugin {
         if (serializer == null) {
             this.getLogger().info("The specified serializer could not be founded, using default. (LEGACY_AMPERSAND)");
             setSerializer(new Serializer(Objects.requireNonNull(Serializers.LEGACY_AMPERSAND.getSerializer())));
-        } else {
-            setSerializer(new Serializer(serializer));
-        }
-        if (Settings.IMP.KEY == null) {
-            getLogger().warning("Musisz wpisać klucz w pliku konfiguracyjnym, aby plugin mógł działać.");
-        }
+        } else { setSerializer(new Serializer(serializer)); }
+        if (Settings.IMP.KEY == null) { getLogger().warning("Musisz wpisać klucz w pliku konfiguracyjnym, aby plugin mógł działać."); }
         try {
             // decode config key
             byte[] decoded = Base64.getDecoder().decode(Settings.IMP.KEY);
@@ -60,24 +56,14 @@ public class Itemszop extends JavaPlugin {
             if (index != -1) {
                 String[] urlList = firebaseWebsocketUrl.split("&");
                 firebaseWebsocketUrl = urlList[0] + "&" + urlList[2];
-                getLogger().info(firebaseWebsocketUrl);
+                if(Settings.IMP.DEBUG) { getLogger().info(firebaseWebsocketUrl); }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        WebSocketConnect();
-    }
+        } catch (Exception e) { e.printStackTrace(); } WebSocketConnect(); }
     @Override
-    public void onDisable() { socket.close(); }
-    private void registerCommands() {
-        new itemszop_cmd().register(getCommand("itemszop"));
-    }
-    private static void setSerializer(Serializer serializer) {
-        Itemszop.serializer = serializer;
-    }
-    public static Serializer getSerializer() {
-        return serializer;
-    }
+    public void onDisable() { socket.close(); this.getServer().getMessenger().unregisterOutgoingPluginChannel(this); this.getServer().getMessenger().unregisterIncomingPluginChannel(this); }
+    private void registerCommands() { new itemszop_cmd().register(getCommand("itemszop")); }
+    private static void setSerializer(Serializer serializer) { Itemszop.serializer = serializer; }
+    public static Serializer getSerializer() { return serializer; }
     public void reloadPlugin() { Settings.IMP.reload(new File(this.getDataFolder().toPath().toFile().getAbsoluteFile(), "config.yml")); }
     public void WebSocketConnect() {
         try {

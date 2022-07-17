@@ -9,7 +9,7 @@ public class WebSocketReconnectTask extends BukkitRunnable {
     @Override
     public void run() {
         if (!socket.isOpen()) {
-            if (Settings.IMP.DEBUG == true) { task.getLogger().info("Reconnecting to websocket..."); }
+            if (Settings.IMP.DEBUG) { task.getLogger().info("Reconnecting to websocket..."); }
             socket.reconnect();
         } else {
             cancel();
