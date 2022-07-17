@@ -15,7 +15,7 @@ public class itemszop_cmd extends CommandBase {
             p.sendMessage(Itemszop.getSerializer().deserialize("<color:#b6eb17>This server using Itemszop plugin.</color>\n" +
                     "Designed by " + Itemszop.getInstance().getDescription().getAuthors() + "\n" +
                     "\n" +
-                    "Avaliable subcommands:\n" +
+                    "Available subcommands:\n" +
                     "⁜ <click:run_command:/itemszop reload>/itemszop reload</click>\n" +
                     "⁜ <click:run_command:/itemszop reconnect>/itemszop reconnect</click>\n" +
                     "⁜ <click:run_command:/itemszop test>/itemszop test</click>"));
