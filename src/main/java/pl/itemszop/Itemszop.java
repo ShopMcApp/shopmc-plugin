@@ -1,9 +1,6 @@
 package pl.itemszop;
 
 import net.elytrium.java.commons.mc.serialization.Serializer;
-import net.elytrium.java.commons.mc.serialization.Serializers;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.ComponentSerializer;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.itemszop.commands.itemszop_cmd;
 
@@ -11,7 +8,6 @@ import java.io.File;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.util.Objects;
 
 public class Itemszop extends JavaPlugin {
     private static Serializer serializer;
@@ -37,10 +33,7 @@ public class Itemszop extends JavaPlugin {
         Settings.IMP.reload(new File(this.getDataFolder(), "config.yml"), Settings.IMP.NO_PERMISSION);
         instance = this;
         registerCommands();
-        ComponentSerializer<Component, Component, String> serializer = Serializers.valueOf(Settings.IMP.SERIALIZER).getSerializer();
-        if (serializer == null) {
-            this.getLogger().info("The specified serializer could not be founded, using default. Please regenerate config");
-        } if (Settings.IMP.KEY == null) { getLogger().warning("Musisz wpisać klucz w pliku konfiguracyjnym, aby plugin mógł działać."); }
+        if (Settings.IMP.KEY == null) { getLogger().warning("Musisz wpisać klucz w pliku konfiguracyjnym, aby plugin mógł działać."); }
         try {
             // decode config key
             byte[] decoded = Base64.getDecoder().decode(Settings.IMP.KEY);

@@ -5,12 +5,12 @@ import net.elytrium.java.commons.config.YamlConfig;
 public class Settings extends YamlConfig {
     @Ignore
     public static final Settings IMP = new Settings();
-    public String NO_PERMISSION = "<red>Brak uprawnień.";
+    public String NO_PERMISSION = "&cBrak uprawnień.";
     @Comment("Zmień na true jeśli chcesz sprawdzić czy plugin łączy się z WebSocketem")
     public boolean DEBUG = false;
     @Comment("Interwał sprawdzania czy plugin jest połączony z WebSocketem. Domyślna wartość to 120 sekund czyli 2 minuty. Zalecemy pozostawienie tej opcji na 120.")
     public Integer CHECK_TIME = 120;
-    public String CHECK_CONSOLE = "<yellow>Sprawdź konsolę aby zobaczyć status połączenia ze sklepem.";
+    public String CHECK_CONSOLE = "&eSprawdź konsolę aby zobaczyć status połączenia ze sklepem.";
     public String KEY = "";
     @Comment({
             "Available serializers:",
