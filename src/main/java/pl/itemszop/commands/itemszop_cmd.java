@@ -64,6 +64,9 @@ public class itemszop_cmd extends CommandBase {
                     }
                 }
             }
+            default: {
+                p.sendMessage(getSerializer().deserialize(Settings.IMP.INVALID_ARGUMENT));
+            }
         }
         return false;
     }

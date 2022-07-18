@@ -6,6 +6,7 @@ public class Settings extends YamlConfig {
     @Ignore
     public static final Settings IMP = new Settings();
     public String NO_PERMISSION = "&cBrak uprawnień.";
+    public String INVALID_ARGUMENT = "&cNiepoprawny argument.";
     @Comment("Zmień na true jeśli chcesz sprawdzić czy plugin łączy się z WebSocketem")
     public boolean DEBUG = false;
     @Comment("Interwał sprawdzania czy plugin jest połączony z WebSocketem. Domyślna wartość to 120 sekund czyli 2 minuty. Zalecemy pozostawienie tej opcji na 120.")
