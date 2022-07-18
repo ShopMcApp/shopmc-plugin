@@ -5,7 +5,7 @@ Plugin stworzony dla projektu https://github.com/michaljaz/itemszop, plugin sync
 ### Konfiguracja pluginu:
 Zdobądź wartość klucza wygenerowaną w edycji serwera w Twoim sklepie stworzonym z https://github.com/michaljaz/itemszop.
 
-Zmień wartość `KEY` w katalogu ../plugins/Itemszop-Plugin/config.yml na wygenerowany klucz.
+Zmień wartość `KEY` w pliku config.yml na wygenerowany klucz.
 
 
 ### Wydania deweloperskie:
