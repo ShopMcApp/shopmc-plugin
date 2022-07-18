@@ -1,63 +1,63 @@
 package pl.itemszop;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.bukkit.Bukkit;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 
 import java.net.URI;
-import java.util.Objects;
 
-import static org.bukkit.Bukkit.getLogger;
 import static org.bukkit.Bukkit.getServer;
 
 public class WebSocket extends WebSocketClient {
-
-    private static Itemszop plugin = Itemszop.getInstance();
-
-    public WebSocket(Itemszop plugin, URI serverUri) {
+    private static final Itemszop plugin = Itemszop.getInstance();
+    public WebSocket(URI serverUri) {
         super(serverUri);
-        WebSocket.plugin = plugin;
     }
 
-
+    void executeCommand(String command, String commandId){
+        send("{\"t\":\"d\",\"d\":{\"r\":1,\"a\":\"p\",\"b\":{\"p\":\"/servers/" + plugin.serverId + "/commands/" + plugin.secret + "/" + commandId + "\",\"d\":null}}}");
+        Bukkit.getScheduler().runTask(plugin, () -> Bukkit.dispatchCommand( getServer().getConsoleSender(), command ));
+    }
     @Override
     public void onOpen(ServerHandshake handshakedata) {
         send("{\"t\":\"d\",\"d\":{\"r\":1,\"a\":\"q\",\"b\":{\"p\":\"/servers/" + plugin.serverId + "/commands/" + plugin.secret + "\",\"h\":\"\"}}}");
-        getLogger().info("§aPołączono");
+        if (Settings.IMP.DEBUG) { plugin.getLogger().info("Połączono z " + plugin.serverId); }
     }
-
     @Override
     public void onMessage(String message) {
-        try {
-            JSONParser parser = new JSONParser();
-            JSONObject json = (JSONObject) parser.parse(message);
-            if (Objects.equals(json.get("t").toString(), "d")) {
-                JSONObject json_data = (JSONObject) parser.parse(json.get("d").toString());
-                json_data = (JSONObject) parser.parse(json_data.get("b").toString());
-                if (json_data.get("d") != null && json_data.get("d").toString().length() > 0) {
-                    json_data = (JSONObject) parser.parse(json_data.get("d").toString());
-                    for (Object commandId : json_data.keySet()) {
-                        String command = json_data.get(commandId).toString();
-                        send("{\"t\":\"d\",\"d\":{\"r\":1,\"a\":\"p\",\"b\":{\"p\":\"/servers/" + plugin.serverId + "/commands/" + plugin.secret + "/" + commandId + "\",\"d\":null}}}");
-                        Bukkit.getScheduler().runTask(plugin, () -> Bukkit.dispatchCommand(getServer().getConsoleSender(), command));
-
-                    }
+        JsonObject json = new JsonParser().parse(message).getAsJsonObject();
+        if(json.get("t").getAsString().equals("d")){
+            JsonElement data = json.get("d").getAsJsonObject().get("b").getAsJsonObject().get("d");
+            JsonElement path = json.get("d").getAsJsonObject().get("b").getAsJsonObject().get("p");
+            // received via SET method
+            if(data.isJsonObject()){
+                for(Object entry : data.getAsJsonObject().entrySet()){
+                    String commandId = entry.toString().split("=")[0];
+                    String command = data.getAsJsonObject().get(commandId).getAsString();
+                    executeCommand(command, commandId);
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            // received via PUSH method
+            if(data.isJsonPrimitive() && path != null){
+                String[] pathArray = path.getAsString().split("/");
+                String commandId = pathArray[pathArray.length-1];
+                String command = data.getAsString();
+                executeCommand(command, commandId);
+            }
         }
     }
-
     @Override
     public void onClose(int code, String reason, boolean remote) {
-        getLogger().info("§cRozłączono");
+        if (Settings.IMP.DEBUG) { plugin.getLogger().info("Rozłączono z WebSocketem: " + reason); }
+        if (code != 1000) {
+            new WebSocketReconnectTask().runTaskTimer(plugin, 0L, (Settings.IMP.CHECK_TIME * 20 ));
+        }
     }
-
     @Override
-    public void onError(Exception ex) {
-        ex.printStackTrace();
+    public void onError(Exception e) {
+        e.printStackTrace();
     }
 }
