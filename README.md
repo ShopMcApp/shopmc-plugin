@@ -5,18 +5,21 @@ Plugin stworzony dla projektu https://github.com/michaljaz/itemszop, plugin sync
 ### Konfiguracja pluginu:
 Zdobądź wartość klucza wygenerowaną w edycji serwera w Twoim sklepie stworzonym z https://github.com/michaljaz/itemszop.
 
-Zmień wartość `KEY` w katalogu ../plugins/Itemszop-Plugin/config.yml na wygenerowany klucz.
+Zmień wartość `KEY` w pliku config.yml na wygenerowany klucz.
 
 
 ### Wydania deweloperskie:
 Development builds (JDK11 & JDK17): https://github.com/ReferTV/itemszop-plugin-gamesmc/actions
+
+### Wymagania: ⚠️
+* Serwer spigot lub jego forki na 1.8-1.19
 
 ### Planowane funkcje 🧪🔜
 * Działanie na Velocity/BungeeCord
 
 ### Znane błędy: ⚠️
 
-* Serializery nie działają na 1.8
+* Brak
 
 ### Komendy:
 
