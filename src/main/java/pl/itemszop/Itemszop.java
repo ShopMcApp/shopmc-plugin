@@ -33,23 +33,32 @@ public class Itemszop extends JavaPlugin {
         Settings.IMP.reload(new File(this.getDataFolder(), "config.yml"), Settings.IMP.NO_PERMISSION);
         instance = this;
         registerCommands();
-        if (Settings.IMP.KEY == null) { getLogger().warning("Musisz wpisać klucz w pliku konfiguracyjnym, aby plugin mógł działać."); }
-        try {
-            // decode config key
-            byte[] decoded = Base64.getDecoder().decode(Settings.IMP.KEY);
-            String decodedStr = new String(decoded, StandardCharsets.UTF_8);
-            String[] stringList = decodedStr.split("@");
-            secret = stringList[0];
-            firebaseWebsocketUrl = stringList[1];
-            serverId = stringList[2];
-            // cut websocket url param
-            int index = firebaseWebsocketUrl.indexOf("&s=");
-            if (index != -1) {
-                String[] urlList = firebaseWebsocketUrl.split("&");
-                firebaseWebsocketUrl = urlList[0] + "&" + urlList[2];
-                if(Settings.IMP.DEBUG) { getLogger().info(firebaseWebsocketUrl); }
+        if (Settings.IMP.KEY == null || Settings.IMP.KEY.equals("")) {
+            getLogger().warning("Musisz wpisać klucz w pliku konfiguracyjnym, aby plugin mógł działać.");
+        } else {
+            try {
+                // decode config key
+                byte[] decoded = Base64.getDecoder().decode(Settings.IMP.KEY);
+                String decodedStr = new String(decoded, StandardCharsets.UTF_8);
+                String[] stringList = decodedStr.split("@");
+                secret = stringList[0];
+                firebaseWebsocketUrl = stringList[1];
+                serverId = stringList[2];
+                // cut websocket url param
+                int index = firebaseWebsocketUrl.indexOf("&s=");
+                if (index != -1) {
+                    String[] urlList = firebaseWebsocketUrl.split("&");
+                    firebaseWebsocketUrl = urlList[0] + "&" + urlList[2];
+                    if (Settings.IMP.DEBUG) {
+                        getLogger().info(firebaseWebsocketUrl);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) { e.printStackTrace(); } WebSocketConnect(); }
+            WebSocketConnect();
+        }
+    }
     @Override
     public void onDisable() { socket.close(); }
     private void registerCommands() { new itemszop_cmd().register(getCommand("itemszop")); }

@@ -28,6 +28,7 @@ public class WebSocket extends WebSocketClient {
     }
     @Override
     public void onMessage(String message) {
+        System.out.println(message);
         JsonObject json = new JsonParser().parse(message).getAsJsonObject();
         if(json.get("t").getAsString().equals("d")){
             JsonElement data = json.get("d").getAsJsonObject().get("b").getAsJsonObject().get("d");
