@@ -17,9 +17,13 @@ public class WebSocket extends WebSocketClient {
         super(serverUri);
     }
 
-    void executeCommand(String command, String commandId){
-        send("{\"t\":\"d\",\"d\":{\"r\":1,\"a\":\"p\",\"b\":{\"p\":\"/servers/" + plugin.serverId + "/commands/" + plugin.secret + "/" + commandId + "\",\"d\":null}}}");
-        Bukkit.getScheduler().runTask(plugin, () -> Bukkit.dispatchCommand( getServer().getConsoleSender(), command ));
+    void execute(JsonObject data, String path){
+        int amount = data.get("amount").getAsInt();
+        String nick = data.get("nick").getAsString();
+        JsonObject service = data.get("service").getAsJsonObject();
+        System.out.println(nick);
+        send("{\"t\":\"d\",\"d\":{\"r\":1,\"a\":\"p\",\"b\":{\"p\":\"/servers/" + plugin.serverId + "/commands/" + plugin.secret + "/" + path + "\",\"d\":null}}}");
+        Bukkit.getScheduler().runTask(plugin, () -> Bukkit.dispatchCommand( getServer().getConsoleSender(), "say TODO" ));
     }
     @Override
     public void onOpen(ServerHandshake handshakedata) {
@@ -28,25 +32,23 @@ public class WebSocket extends WebSocketClient {
     }
     @Override
     public void onMessage(String message) {
-        System.out.println(message);
         JsonObject json = new JsonParser().parse(message).getAsJsonObject();
         if(json.get("t").getAsString().equals("d")){
-            JsonElement data = json.get("d").getAsJsonObject().get("b").getAsJsonObject().get("d");
-            JsonElement path = json.get("d").getAsJsonObject().get("b").getAsJsonObject().get("p");
-            // received via SET method
-            if(data.isJsonObject()){
-                for(Object entry : data.getAsJsonObject().entrySet()){
-                    String commandId = entry.toString().split("=")[0];
-                    String command = data.getAsJsonObject().get(commandId).getAsString();
-                    executeCommand(command, commandId);
+            JsonElement _data = json.get("d").getAsJsonObject().get("b").getAsJsonObject().get("d");
+            JsonElement _path = json.get("d").getAsJsonObject().get("b").getAsJsonObject().get("p");
+            if(_data.isJsonObject()){
+                JsonObject data = _data.getAsJsonObject();
+                if(data.get("nick") != null){
+                    String[] pathArray = _path.getAsString().split("/");
+                    String path = pathArray[pathArray.length-1];
+                    execute(data, path);
+                } else {
+                    for(Object entry : data.entrySet()){
+                        String path = entry.toString().split("=")[0];
+                        JsonObject data2 = data.get(path).getAsJsonObject();
+                        execute(data2, path);
+                    }
                 }
-            }
-            // received via PUSH method
-            if(data.isJsonPrimitive() && path != null){
-                String[] pathArray = path.getAsString().split("/");
-                String commandId = pathArray[pathArray.length-1];
-                String command = data.getAsString();
-                executeCommand(command, commandId);
             }
         }
     }
