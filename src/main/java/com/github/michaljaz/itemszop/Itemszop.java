@@ -1,8 +1,8 @@
-package pl.itemszop;
+package com.github.michaljaz.itemszop;
 
 import net.elytrium.java.commons.mc.serialization.Serializer;
 import org.bukkit.plugin.java.JavaPlugin;
-import pl.itemszop.commands.itemszop_cmd;
+import com.github.michaljaz.itemszop.commands.itemszop_cmd;
 
 import java.io.File;
 import java.net.URI;

@@ -1,4 +1,4 @@
-package pl.itemszop;
+package com.github.michaljaz.itemszop;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

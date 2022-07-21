@@ -1,4 +1,4 @@
-package pl.itemszop;
+package com.github.michaljaz.itemszop;
 
 import net.elytrium.java.commons.config.YamlConfig;
 

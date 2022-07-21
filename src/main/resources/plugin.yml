@@ -1,8 +1,8 @@
 name: Itemszop-Plugin
 version: '1.0'
-main: pl.itemszop.Itemszop
+main: com.michaljaz.itemszop.Itemszop
 prefix: Itemszop-plugin
-website: sklep.gamesmc.pl
+website: itemszop.tk
 api-version: 1.19
 authors:
   - ReferTV

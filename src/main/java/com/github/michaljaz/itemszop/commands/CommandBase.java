@@ -1,4 +1,4 @@
-package pl.itemszop.commands;
+package com.github.michaljaz.itemszop.commands;
 
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
