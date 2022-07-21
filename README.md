@@ -9,7 +9,7 @@ Zmień wartość `KEY` w pliku config.yml na wygenerowany klucz.
 
 
 ### Wydania deweloperskie:
-Development builds (JDK11 & JDK17): https://github.com/ReferTV/itemszop-plugin-gamesmc/actions
+Development builds (JDK11 & JDK17): https://github.com/michaljaz/itemszop-plugin/actions
 
 ### Wymagania: ⚠️
 * Serwer spigot lub jego forki na 1.8-1.19
