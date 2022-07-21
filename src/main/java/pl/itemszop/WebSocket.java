@@ -6,9 +6,7 @@ import com.google.gson.JsonParser;
 import org.bukkit.Bukkit;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
-
 import java.net.URI;
-
 import static org.bukkit.Bukkit.getServer;
 
 public class WebSocket extends WebSocketClient {
@@ -18,31 +16,41 @@ public class WebSocket extends WebSocketClient {
     }
 
     void execute(JsonObject data, String path){
+        // useful params
         int amount = data.get("amount").getAsInt();
         String nick = data.get("nick").getAsString();
         JsonObject service = data.get("service").getAsJsonObject();
-        System.out.println(nick);
+        //execute commands on server
+        String commands = service.get("commands").getAsString().replace("[nick]", nick).replace("[amount]", Integer.toString(amount));
+        for (String command : commands.split("\n")) {
+            Bukkit.getScheduler().runTask(plugin, () -> Bukkit.dispatchCommand( getServer().getConsoleSender(), command ));
+        }
+        // remove commands from firebase
         send("{\"t\":\"d\",\"d\":{\"r\":1,\"a\":\"p\",\"b\":{\"p\":\"/servers/" + plugin.serverId + "/commands/" + plugin.secret + "/" + path + "\",\"d\":null}}}");
-        Bukkit.getScheduler().runTask(plugin, () -> Bukkit.dispatchCommand( getServer().getConsoleSender(), "say TODO" ));
     }
     @Override
     public void onOpen(ServerHandshake handshakedata) {
-        send("{\"t\":\"d\",\"d\":{\"r\":1,\"a\":\"q\",\"b\":{\"p\":\"/servers/" + plugin.serverId + "/commands/" + plugin.secret + "\",\"h\":\"\"}}}");
         if (Settings.IMP.DEBUG) { plugin.getLogger().info("Połączono z " + plugin.serverId); }
+        // send listen request to command reference
+        send("{\"t\":\"d\",\"d\":{\"r\":1,\"a\":\"q\",\"b\":{\"p\":\"/servers/" + plugin.serverId + "/commands/" + plugin.secret + "\",\"h\":\"\"}}}");
     }
     @Override
     public void onMessage(String message) {
         JsonObject json = new JsonParser().parse(message).getAsJsonObject();
+        // check if response type is data
         if(json.get("t").getAsString().equals("d")){
             JsonElement _data = json.get("d").getAsJsonObject().get("b").getAsJsonObject().get("d");
             JsonElement _path = json.get("d").getAsJsonObject().get("b").getAsJsonObject().get("p");
+            //check if data inside response is json
             if(_data.isJsonObject()){
                 JsonObject data = _data.getAsJsonObject();
                 if(data.get("nick") != null){
+                    // single command response
                     String[] pathArray = _path.getAsString().split("/");
                     String path = pathArray[pathArray.length-1];
                     execute(data, path);
                 } else {
+                    // multi command response
                     for(Object entry : data.entrySet()){
                         String path = entry.toString().split("=")[0];
                         JsonObject data2 = data.get(path).getAsJsonObject();
