@@ -50,8 +50,8 @@ public class itemszop_cmd extends CommandBase {
             case "reconnect": {
                 if (p.hasPermission("itemszop.reconnect")) {
                     socket.close();
-                    getInstance().WebSocketConnect();
                     p.sendMessage(getSerializer().deserialize(Settings.IMP.CHECK_CONSOLE));
+                    getInstance().WebSocketConnect();
                     return true;
                 }
             }
@@ -62,6 +62,7 @@ public class itemszop_cmd extends CommandBase {
                     } else {
                         p.sendMessage("Jesteś połączony z WebSocketem");
                     }
+                    return true;
                 }
             }
             default: {

@@ -1,6 +1,9 @@
 package com.github.michaljaz.itemszop;
 
 import net.elytrium.java.commons.mc.serialization.Serializer;
+import net.elytrium.java.commons.mc.serialization.Serializers;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.ComponentSerializer;
 import org.bukkit.plugin.java.JavaPlugin;
 import com.github.michaljaz.itemszop.commands.itemszop_cmd;
 
@@ -8,9 +11,12 @@ import java.io.File;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Locale;
+import java.util.Objects;
 
 public class Itemszop extends JavaPlugin {
-    private static Serializer serializer;
+
+    private static Serializer SERIALIZER;
     private static Itemszop instance;
     public static WebSocket socket;
     public static Itemszop getInstance() {
@@ -33,6 +39,13 @@ public class Itemszop extends JavaPlugin {
         Settings.IMP.reload(new File(this.getDataFolder(), "config.yml"), Settings.IMP.NO_PERMISSION);
         instance = this;
         registerCommands();
+        ComponentSerializer<Component, Component, String> serializer = Serializers.valueOf(Settings.IMP.SERIALIZER.toUpperCase(Locale.ROOT)).getSerializer();
+        if (serializer == null) {
+            getLogger().warning("The specified serializer could not be founded, using default. (LEGACY_AMPERSAND)");
+            setSerializer(new Serializer(Serializers.LEGACY_AMPERSAND.getSerializer() != null ? Serializers.LEGACY_AMPERSAND.getSerializer() : null));
+        } else {
+            setSerializer(new Serializer(serializer));
+        }
         if (Settings.IMP.KEY == null || Settings.IMP.KEY.equals("")) {
             getLogger().warning("Musisz wpisać klucz w pliku konfiguracyjnym, aby plugin mógł działać.");
         } else {
@@ -62,8 +75,12 @@ public class Itemszop extends JavaPlugin {
     @Override
     public void onDisable() { socket.close(); }
     private void registerCommands() { new itemszop_cmd().register(getCommand("itemszop")); }
-    private static void setSerializer(Serializer serializer) { Itemszop.serializer = serializer; }
-    public static Serializer getSerializer() { return serializer; }
+    private static void setSerializer(Serializer serializer) {
+        SERIALIZER = serializer;
+    }
+    public static Serializer getSerializer() {
+        return SERIALIZER;
+    }
     public void reloadPlugin() { Settings.IMP.reload(new File(this.getDataFolder().toPath().toFile().getAbsoluteFile(), "config.yml")); }
     public void WebSocketConnect() {
         try {
