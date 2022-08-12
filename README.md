@@ -7,7 +7,6 @@ Zdobądź wartość klucza wygenerowaną w edycji serwera w Twoim sklepie stworz
 
 Zmień wartość `KEY` w pliku config.yml na wygenerowany klucz.
 
-
 ### Wydania deweloperskie:
 Development builds (JDK11 & JDK17): https://github.com/michaljaz/itemszop-plugin/actions
 
@@ -15,7 +14,7 @@ Development builds (JDK11 & JDK17): https://github.com/michaljaz/itemszop-plugin
 * Serwer spigot lub jego forki na 1.8-1.19
 
 ### Planowane funkcje 🧪🔜
-* Działanie na Velocity/BungeeCord
+* Działanie na serwerach proxy Velocity/BungeeCord
 
 ### Znane błędy: ⚠️
 
@@ -27,6 +26,7 @@ Development builds (JDK11 & JDK17): https://github.com/michaljaz/itemszop-plugin
 | ------------- |:-------------------:| -----:|
 | itemszop    | default | Wyświetla informację o pluginie |
 | itemszop reload   | itemszop.reload      |  Przeładowuje konfigurację pluginu |
+| itemszop reconnect   | itemszop.reconnect       |  Ponawia połączenie z bazą |
 | itemszop test   | itemszop.test       |  Testuje połączenie z bazą firebase |
 
 ### Użyte biblioteki:
