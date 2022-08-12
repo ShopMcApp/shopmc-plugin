@@ -28,6 +28,7 @@ public class Itemszop extends JavaPlugin {
     @Override
     public void onEnable() {
         // Startup message
+        instance = this;
         getLogger().info("\n _                                         \n" +
                 "| |  _                                     \n" +
                 "| |_| |_ _____ ____   ___ _____ ___  ____  \n" +
@@ -36,8 +37,8 @@ public class Itemszop extends JavaPlugin {
                 "|_|  \\__)_____)_|_|_(___/(_____)___/|  __/ \n" +
                 "                                    |_|  " + this.getDescription().getVersion() + "\n" +
                 this.getName() + " by " + this.getDescription().getAuthors() + "\n");
+        if (Settings.IMP.DEBUG) { getLogger().info("Klucz to " + secret + "\nWebsocket URL to " + firebaseWebsocketUrl + "\nSerwer ID to " + serverId); }
         Settings.IMP.reload(new File(this.getDataFolder(), "config.yml"), Settings.IMP.NO_PERMISSION);
-        instance = this;
         registerCommands();
         ComponentSerializer<Component, Component, String> serializer = Serializers.valueOf(Settings.IMP.SERIALIZER.toUpperCase(Locale.ROOT)).getSerializer();
         if (serializer == null) {
