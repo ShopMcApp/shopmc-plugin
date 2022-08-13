@@ -37,7 +37,6 @@ public class Itemszop extends JavaPlugin {
                 "|_|  \\__)_____)_|_|_(___/(_____)___/|  __/ \n" +
                 "                                    |_|  " + this.getDescription().getVersion() + "\n" +
                 this.getName() + " by " + this.getDescription().getAuthors() + "\n");
-        if (Settings.IMP.DEBUG) { getLogger().info("Klucz to " + secret + "\nWebsocket URL to " + firebaseWebsocketUrl + "\nSerwer ID to " + serverId); }
         Settings.IMP.reload(new File(this.getDataFolder(), "config.yml"), Settings.IMP.NO_PERMISSION);
         registerCommands();
         ComponentSerializer<Component, Component, String> serializer = Serializers.valueOf(Settings.IMP.SERIALIZER.toUpperCase(Locale.ROOT)).getSerializer();
@@ -48,7 +47,7 @@ public class Itemszop extends JavaPlugin {
             setSerializer(new Serializer(serializer));
         }
         if (Settings.IMP.KEY == null || Settings.IMP.KEY.equals("")) {
-            getLogger().warning("Musisz wpisać klucz w pliku konfiguracyjnym, aby plugin mógł działać.");
+            getLogger().warning("You have to enter the key in the config file for the plugin to work.");
         } else {
             try {
                 // decode config key
@@ -72,6 +71,7 @@ public class Itemszop extends JavaPlugin {
             }
             WebSocketConnect();
         }
+        if (Settings.IMP.DEBUG) { getLogger().info("Key: " + secret + "\nWebsocket URL: " + firebaseWebsocketUrl + "\nServer ID: " + serverId); }
     }
     @Override
     public void onDisable() { socket.close(); }

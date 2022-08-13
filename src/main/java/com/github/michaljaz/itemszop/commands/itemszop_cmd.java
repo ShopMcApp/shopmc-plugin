@@ -58,9 +58,9 @@ public class itemszop_cmd extends CommandBase {
             case "test": {
                 if (p.hasPermission("itemszop.test")) {
                     if (!socket.isOpen()) {
-                        p.sendMessage("Nie jesteś połączony z WebSocketem");
+                        p.sendMessage("Your Websocket is offline");
                     } else {
-                        p.sendMessage("Jesteś połączony z WebSocketem");
+                        p.sendMessage("Your Websocket is online");
                     }
                     return true;
                 }

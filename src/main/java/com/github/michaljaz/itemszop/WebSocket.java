@@ -7,6 +7,8 @@ import org.bukkit.Bukkit;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import java.net.URI;
+import java.util.Objects;
+
 import static org.bukkit.Bukkit.getServer;
 
 public class WebSocket extends WebSocketClient {
@@ -30,7 +32,7 @@ public class WebSocket extends WebSocketClient {
     }
     @Override
     public void onOpen(ServerHandshake handshakedata) {
-        if (Settings.IMP.DEBUG) { plugin.getLogger().info("Połączono z " + plugin.serverId); }
+        if (Settings.IMP.DEBUG) { plugin.getLogger().info("Connected to server " + plugin.serverId); }
         // send listen request to command reference
         send("{\"t\":\"d\",\"d\":{\"r\":1,\"a\":\"q\",\"b\":{\"p\":\"/servers/" + plugin.serverId + "/commands/" + plugin.secret + "\",\"h\":\"\"}}}");
     }
@@ -58,11 +60,18 @@ public class WebSocket extends WebSocketClient {
                     }
                 }
             }
+        }else if(json.get("t").getAsString().equals("c") && Objects.equals(json.get("d").getAsJsonObject().get("t").getAsString(), "r")){
+            // websocket url needs update
+            String newUrl = "wss://" + json.get("d").getAsJsonObject().get("d").getAsString() + "/" + plugin.firebaseWebsocketUrl.split("/")[3];
+            plugin.socket.uri = URI.create(newUrl);
+            if (Settings.IMP.DEBUG) { plugin.getLogger().info("Websocket address changed: " + newUrl); }
         }
+
+
     }
     @Override
     public void onClose(int code, String reason, boolean remote) {
-        if (Settings.IMP.DEBUG) { plugin.getLogger().info("Rozłączono z WebSocketem: " + reason); }
+        if (Settings.IMP.DEBUG) { plugin.getLogger().info("Websocket connection closed: " + reason); }
         if (code != 1000) {
             new WebSocketReconnectTask().runTaskTimer(plugin, 0L, (Settings.IMP.CHECK_TIME * 20 ));
         }
