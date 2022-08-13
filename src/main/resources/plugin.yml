@@ -3,7 +3,7 @@ version: '1.0'
 main: com.github.michaljaz.itemszop.Itemszop
 prefix: Itemszop-plugin
 website: itemszop.tk
-api-version: 1.13
+api-version: 1.19
 authors:
   - ReferTV
   - drmike
