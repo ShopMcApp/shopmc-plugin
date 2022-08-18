@@ -25,7 +25,7 @@ public class WebSocket extends WebSocketClient {
         //execute commands on server
         String commands = service.get("commands").getAsString().replace("[nick]", nick).replace("[amount]", Integer.toString(amount));
         for (String command : commands.split("\n")) {
-            Bukkit.getScheduler().runTask(plugin, () -> Bukkit.dispatchCommand( getServer().getConsoleSender(), command ));
+            Bukkit.getScheduler().runTask(plugin, () -> Bukkit.dispatchCommand(getServer().getConsoleSender(), command));
         }
         // remove commands from firebase
         send("{\"t\":\"d\",\"d\":{\"r\":1,\"a\":\"p\",\"b\":{\"p\":\"/servers/" + plugin.serverId + "/commands/" + plugin.secret + "/" + path + "\",\"d\":null}}}");
@@ -60,18 +60,18 @@ public class WebSocket extends WebSocketClient {
                     }
                 }
             }
-        }else if(json.get("t").getAsString().equals("c") && Objects.equals(json.get("d").getAsJsonObject().get("t").getAsString(), "r")){
+        } else if(json.get("t").getAsString().equals("c") && Objects.equals(json.get("d").getAsJsonObject().get("t").getAsString(), "r")){
             // websocket url needs update
             String newUrl = "wss://" + json.get("d").getAsJsonObject().get("d").getAsString() + "/" + plugin.firebaseWebsocketUrl.split("/")[3];
-            plugin.socket.uri = URI.create(newUrl);
+            Itemszop.socket.uri = URI.create(newUrl);
             if (Settings.IMP.DEBUG) { plugin.getLogger().info("Websocket address changed: " + newUrl); }
         }
-
-
     }
     @Override
     public void onClose(int code, String reason, boolean remote) {
-        if (Settings.IMP.DEBUG) { plugin.getLogger().info("Websocket connection closed: " + reason); }
+        if (Settings.IMP.DEBUG) {
+            plugin.getLogger().info("Websocket connection closed: " + reason);
+        }
         if (code != 1000) {
             new WebSocketReconnectTask().runTaskTimer(plugin, 0L, (Settings.IMP.CHECK_TIME * 20 ));
         }

@@ -12,8 +12,8 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Locale;
-import java.util.Objects;
 
+@SuppressWarnings("ConstantConditions")
 public class Itemszop extends JavaPlugin {
 
     private static Serializer SERIALIZER;

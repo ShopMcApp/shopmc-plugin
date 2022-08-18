@@ -11,7 +11,7 @@ public class itemszop_cmd extends CommandBase {
     @Override
     protected boolean onCommand(Player p, Command cmd, String label, String[] args) {
         if (args.length == 0) {
-            if (Settings.IMP.SERIALIZER == "MINIMESSAGE"){
+            if (Settings.IMP.SERIALIZER.equals("MINIMESSAGE")){
                 p.sendMessage(getSerializer().deserialize("<color:#b6eb17>This server using Itemszop plugin.</color>\n" +
                         "Designed by " + getInstance().getDescription().getAuthors() + "\n" +
                         "\n" +
