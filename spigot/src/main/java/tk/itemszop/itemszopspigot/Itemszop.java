@@ -1,11 +1,11 @@
-package com.github.michaljaz.itemszop;
+package tk.itemszop.itemszopspigot;
 
 import net.elytrium.java.commons.mc.serialization.Serializer;
 import net.elytrium.java.commons.mc.serialization.Serializers;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import org.bukkit.plugin.java.JavaPlugin;
-import com.github.michaljaz.itemszop.commands.itemszop_cmd;
+import tk.itemszop.itemszopspigot.commands.itemszop_cmd;
 
 import java.io.File;
 import java.net.URI;

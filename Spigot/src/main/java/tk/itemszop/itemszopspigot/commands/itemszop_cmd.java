@@ -1,10 +1,11 @@
-package com.github.michaljaz.itemszop.commands;
+package tk.itemszop.itemszopspigot.commands;
 
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
-import com.github.michaljaz.itemszop.Settings;
+import tk.itemszop.itemszopspigot.Settings;
+import tk.itemszop.itemszopspigot.*;
 
-import static com.github.michaljaz.itemszop.Itemszop.*;
+import static tk.itemszop.itemszopspigot.Itemszop.*;
 
 public class itemszop_cmd extends CommandBase {
 
