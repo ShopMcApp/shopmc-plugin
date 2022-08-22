@@ -1,8 +1,9 @@
-package com.github.michaljaz.itemszop;
+package tk.itemszop.itemszopspigot;
 
 import org.bukkit.scheduler.BukkitRunnable;
 
-import static com.github.michaljaz.itemszop.Itemszop.socket;
+import static tk.itemszop.itemszopspigot.Itemszop.socket;
+
 
 public class WebSocketReconnectTask extends BukkitRunnable {
     private static final Itemszop task = Itemszop.getInstance();

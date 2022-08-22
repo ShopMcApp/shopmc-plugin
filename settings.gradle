@@ -1,1 +1,3 @@
 rootProject.name = 'itemszop'
+include 'spigot'
+include 'velocity'

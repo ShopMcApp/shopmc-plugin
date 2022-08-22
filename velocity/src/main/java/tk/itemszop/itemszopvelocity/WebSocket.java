@@ -1,18 +1,18 @@
-package com.github.michaljaz.itemszop;
+package tk.itemszop.itemszopvelocity;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.bukkit.Bukkit;
+import com.velocitypowered.api.proxy.ProxyServer;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
+
 import java.net.URI;
 import java.util.Objects;
 
-import static org.bukkit.Bukkit.getServer;
-
 public class WebSocket extends WebSocketClient {
     private static final Itemszop plugin = Itemszop.getInstance();
+    private static ProxyServer server = Itemszop.getProxyServer();
     public WebSocket(URI serverUri) {
         super(serverUri);
     }
@@ -25,7 +25,7 @@ public class WebSocket extends WebSocketClient {
         //execute commands on server
         String commands = service.get("commands").getAsString().replace("[nick]", nick).replace("[amount]", Integer.toString(amount));
         for (String command : commands.split("\n")) {
-            Bukkit.getScheduler().runTask(plugin, () -> Bukkit.dispatchCommand(getServer().getConsoleSender(), command));
+            server.getCommandManager().executeAsync(server.getConsoleCommandSource(), command);
         }
         // remove commands from firebase
         send("{\"t\":\"d\",\"d\":{\"r\":1,\"a\":\"p\",\"b\":{\"p\":\"/servers/" + plugin.serverId + "/commands/" + plugin.secret + "/" + path + "\",\"d\":null}}}");
@@ -72,9 +72,9 @@ public class WebSocket extends WebSocketClient {
         if (Settings.IMP.DEBUG) {
             plugin.getLogger().info("Websocket connection closed: " + reason);
         }
-        if (code != 1000) {
-            new WebSocketReconnectTask().runTaskTimer(plugin, 0L, (Settings.IMP.CHECK_TIME * 20 ));
-        }
+//        if (code != 1000) {
+//            new WebSocketReconnectTask().runTaskTimer(plugin, 0L, (Settings.IMP.CHECK_TIME * 20 ));
+//        }
     }
     @Override
     public void onError(Exception e) {
