@@ -1,26 +1,20 @@
 # Itemszop Plugin 💸
 
-Plugin stworzony dla projektu https://github.com/michaljaz/itemszop, plugin synchronizuje polecenia za pomocą WebSocketu. Plugin tworzy kolejkę poleceń w bazie, w przypadku braku połączenia plugin <-> sklep polecenia są przechowywane w bazie, do momentu, aż łączność z serwerem nie zostanie przywrócona.
+Plugin stworzony dla projektu https://github.com/michaljaz/itemszop, plugin synchronizuje polecenia za pomocą WebSocketu, tworzy on również kolejkę poleceń w bazie, w przypadku braku połączenia plugin <-> sklep polecenia są przechowywane w bazie, do momentu, aż łączność z serwerem nie zostanie przywrócona.
 
 ### Konfiguracja pluginu:
 Zdobądź wartość klucza wygenerowaną w edycji serwera w Twoim sklepie stworzonym z https://github.com/michaljaz/itemszop.
 
 Zmień wartość `KEY` w pliku config.yml na wygenerowany klucz.
 
-### Wydania deweloperskie:
-Development builds (JDK11 & JDK17): https://github.com/michaljaz/itemszop-plugin/actions
+### Przedwczesne wersje deweloperskie:
+Development builds (JDK8 & JDK11 & JDK17): https://github.com/michaljaz/itemszop-plugin/actions
 
-### Wymagania: ⚠️
-* Serwer spigot lub jego forki na 1.8-1.19
+### Aby plugin działał, musisz posiadać: ⚠️
+* Serwer z silnikiem PaperMC na wersji 1.8-1.19.2 lub jego forki takie jak Purpur czy Pufferfish
+* Sklep Itemszop
 
-### Planowane funkcje 🧪🔜
-* Działanie na serwerach proxy Velocity/BungeeCord
-
-### Znane błędy: ⚠️
-
-* Brak
-
-### Komendy:
+### Dostępne polecenia ⌨️
 
 | Polecenie     | Uprawnienie                 | Opis |
 | ------------- |:-------------------:| -----:|
@@ -32,5 +26,6 @@ Development builds (JDK11 & JDK17): https://github.com/michaljaz/itemszop-plugin
 ### Użyte biblioteki:
 
 * https://github.com/PaperMC/Paper
+* https://github.com/KyoriPowered/adventure
 * https://github.com/TooTallNate/Java-WebSocket
 * https://github.com/Elytrium/ElytriumJavaCommons
