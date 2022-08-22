@@ -3,6 +3,10 @@ plugins {
     id 'com.github.johnrengelman.shadow'
 }
 
+compileJava {
+    getOptions().setEncoding("UTF-8")
+}
+
 group = 'tk.itemszop'
 version = '1.0'
 archivesBaseName = 'ItemszopSpigot'
