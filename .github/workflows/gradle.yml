@@ -43,7 +43,7 @@ jobs:
           artifacts: "Velocity/build/libs/Itemszop*.jar"
           body: ${{ join(github.event.commits.*.message, '\n') }}
           prerelease: true
-          name: JDK ${{ matrix.java }} dev-build
+          name: Velocity Plugin JDK ${{ matrix.java }} dev-build
           tag: dev-build-jdk-${{ matrix.java }}
       - name: Itemszop plugin
         run: ./gradlew build
@@ -64,7 +64,7 @@ jobs:
           artifacts: "Spigot/build/libs/Itemszop*.jar"
           body: ${{ join(github.event.commits.*.message, '\n') }}
           prerelease: true
-          name: JDK ${{ matrix.java }} dev-build
+          name: Spigot Plugin JDK ${{ matrix.java }} dev-build
           tag: dev-build-jdk-${{ matrix.java }}
 
 
