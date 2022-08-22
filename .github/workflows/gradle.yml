@@ -14,7 +14,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        java: [ 8, 11, 17 ]
+        java: [ 11, 17 ]
       fail-fast: true
     steps:
       - name: Checkout
@@ -24,13 +24,13 @@ jobs:
         with:
           distribution: adopt
           java-version: ${{ matrix.java }}
-      - name: Build Itemszop plugin
+      - name: Itemszop plugin
         run: ./gradlew build
       - name: Upload Itemszop plugin
         uses: actions/upload-artifact@v3.0.0
         with:
           name: Itemszop plugin Built On JDK ${{ matrix.java }}
-          path: "build/libs/itemszop*.jar"
+          path: "Spigot/build/libs/itemszop*.jar"
       - uses: dev-drprasad/delete-tag-and-release@v0.2.0
         with:
           delete_release: true
@@ -40,8 +40,28 @@ jobs:
       - name: Release the build
         uses: ncipollo/release-action@v1.10.0
         with:
-          artifacts: "build/libs/itemszop*.jar"
+          artifacts: "Spigot/build/libs/itemszop*.jar"
           body: ${{ join(github.event.commits.*.message, '\n') }}
           prerelease: true
-          name: JDK ${{ matrix.java }} Dev-build
+          name: JDK ${{ matrix.java }} dev-build
           tag: dev-build-jdk-${{ matrix.java }}
+      - name: Upload Itemszop plugin
+        uses: actions/upload-artifact@v3.0.0
+        with:
+          name: Itemszop plugin Built On JDK ${{ matrix.java }}
+          path: "Velocity/build/libs/itemszop*.jar"
+      - uses: dev-drprasad/delete-tag-and-release@v0.2.0
+        with:
+          delete_release: true
+          tag_name: dev-build-jdk-${{ matrix.java }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Release the build
+        uses: ncipollo/release-action@v1.10.0
+        with:
+          artifacts: "Velocity/build/libs/itemszop*.jar"
+          body: ${{ join(github.event.commits.*.message, '\n') }}
+          prerelease: true
+          name: JDK ${{ matrix.java }} dev-build
+          tag: dev-build-jdk-${{ matrix.java }}
+
