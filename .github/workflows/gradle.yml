@@ -30,7 +30,7 @@ jobs:
         uses: actions/upload-artifact@v3.0.0
         with:
           name: Itemszop plugin Built On JDK ${{ matrix.java }}
-          path: "Spigot/build/libs/itemszop*.jar"
+          path: "Spigot/build/libs/Itemszop*.jar"
       - uses: dev-drprasad/delete-tag-and-release@v0.2.0
         with:
           delete_release: true
@@ -40,7 +40,7 @@ jobs:
       - name: Release the build
         uses: ncipollo/release-action@v1.10.0
         with:
-          artifacts: "Velocity/build/libs/itemszop*.jar"
+          artifacts: "Velocity/build/libs/Itemszop*.jar"
           body: ${{ join(github.event.commits.*.message, '\n') }}
           prerelease: true
           name: JDK ${{ matrix.java }} dev-build
