@@ -42,7 +42,8 @@ public class Itemszop {
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
         INSTANCE = this;
-        logger.info("SUs?");
+        // TODO: Do zmiany
+        logger.info("Itemszop - ladowanie");
         Settings.IMP.reload(new File(dataDirectory.toString(), "config.yml"));
 
         if (Settings.IMP.KEY == null || Settings.IMP.KEY.equals("")) {
