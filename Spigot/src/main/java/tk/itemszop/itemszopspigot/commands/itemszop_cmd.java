@@ -3,7 +3,6 @@ package tk.itemszop.itemszopspigot.commands;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 import tk.itemszop.itemszopspigot.Settings;
-import tk.itemszop.itemszopspigot.*;
 
 import static tk.itemszop.itemszopspigot.Itemszop.*;
 

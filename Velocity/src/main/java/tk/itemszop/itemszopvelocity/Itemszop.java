@@ -7,6 +7,7 @@ import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 
 import com.velocitypowered.api.proxy.ProxyServer;
+import net.elytrium.java.commons.mc.serialization.Serializer;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -29,9 +30,10 @@ import java.util.concurrent.TimeUnit;
 )
 public class Itemszop {
     private static Itemszop INSTANCE;
-    public String firebaseWebsocketUrl;
+    private static Serializer SERIALIZER;
     String serverId;
     String secret;
+    public String firebaseWebsocketUrl;
     private static Logger logger;
     private static ProxyServer server;
     private final Path dataDirectory;
@@ -44,7 +46,6 @@ public class Itemszop {
         Itemszop.logger = logger;
         this.dataDirectory = dataDirectory;
     }
-
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
         INSTANCE = this;
@@ -92,20 +93,29 @@ public class Itemszop {
     public static Logger getLogger () {
         return logger;
     }
-
     public void WebSocketReconnectTask() {
         server.getScheduler()
                 .buildTask(INSTANCE, () -> {
                     if (!socket.isOpen()) {
                         if (Settings.IMP.DEBUG) { logger.info("Reconnecting to websocket..."); }
                         socket.reconnect();
+                    } else {
+                        // TODO cancel task
                     }
                 })
                 .repeat(Settings.IMP.CHECK_TIME, TimeUnit.MINUTES)
                 .schedule();
     }
-
-
+    private static void setSerializer(Serializer serializer) {
+        SERIALIZER = serializer;
+    }
+    public static Serializer getSerializer() {
+        return SERIALIZER;
+    }
+    public void reloadPlugin() { Settings.IMP.reload(new File(this.getDataFolder().toPath().toFile().getAbsoluteFile(), "config.yml")); }
+    private File getDataFolder() {
+        return getDataFolder();
+    }
     public void WebSocketConnect() {
         try {
             socket = new WebSocket(new URI(firebaseWebsocketUrl));

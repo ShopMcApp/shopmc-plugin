@@ -6,7 +6,6 @@ import com.google.gson.JsonParser;
 import org.bukkit.Bukkit;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
-import tk.itemszop.itemszopspigot.Itemszop;
 import tk.itemszop.itemszopspigot.Settings;
 
 import java.net.URI;
