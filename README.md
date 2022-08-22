@@ -8,7 +8,7 @@ Zdobądź wartość klucza wygenerowaną w edycji serwera w Twoim sklepie stworz
 Zmień wartość `KEY` w pliku config.yml na wygenerowany klucz.
 
 ### Przedwczesne wersje deweloperskie:
-Development builds (JDK8 & JDK11 & JDK17): https://github.com/michaljaz/itemszop-plugin/actions
+Development builds (Tylko te oznaczone jako Pre-release): https://github.com/michaljaz/itemszop-plugin/releases
 
 ### Aby plugin działał, musisz posiadać: ⚠️
 * Serwer z silnikiem PaperMC na wersji 1.8-1.19.2 lub jego forki takie jak Purpur czy Pufferfish
