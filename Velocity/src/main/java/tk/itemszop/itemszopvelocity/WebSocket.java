@@ -72,9 +72,9 @@ public class WebSocket extends WebSocketClient {
         if (Settings.IMP.DEBUG) {
             plugin.getLogger().info("Websocket connection closed: " + reason);
         }
-//        if (code != 1000) {
-//            new WebSocketReconnectTask().runTaskTimer(plugin, 0L, (Settings.IMP.CHECK_TIME * 20 ));
-//        }
+        if (code != 1000) {
+            Itemszop.getInstance().WebSocketReconnectTask();
+        }
     }
     @Override
     public void onError(Exception e) {
