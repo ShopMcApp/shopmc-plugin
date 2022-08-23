@@ -11,10 +11,15 @@ Zmień wartość `KEY` w pliku config.yml na wygenerowany klucz.
 Development builds (Tylko te oznaczone jako Pre-release): https://github.com/michaljaz/itemszop-plugin/releases
 
 ### Aby plugin działał, musisz posiadać: ⚠️
-* Serwer z silnikiem PaperMC na wersji 1.8-1.19.2 lub jego forki takie jak Purpur czy Pufferfish
+* Kompatybilny silnik
 * Sklep Itemszop
 
-### Dostępne polecenia ⌨️
+### Kompatybilne silniki: 🚚
+* PaperMC na wersji 1.8-1.19.2 lub jego forki takie jak Purpur czy Pufferfish (Wersje ItemszopSpigot-xx.jar)
+* Velocity w wersji 3.1 lub wyższej (Wersje ItemszopVelocity-xx.jar)
+
+### Dostępne polecenia: ⌨️
+* W tej chwili działają tylko na wersji Spigot.
 
 | Polecenie     | Uprawnienie                 | Opis |
 | ------------- |:-------------------:| -----:|
