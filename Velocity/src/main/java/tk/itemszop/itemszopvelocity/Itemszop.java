@@ -1,6 +1,7 @@
 package tk.itemszop.itemszopvelocity;
 
 import com.google.inject.Inject;
+import com.velocitypowered.api.command.CommandManager;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.plugin.Plugin;
@@ -9,6 +10,7 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import net.elytrium.java.commons.mc.serialization.Serializer;
 import org.slf4j.Logger;
+import tk.itemszop.itemszopvelocity.commands.ItemszopCommand;
 
 import java.io.File;
 import java.net.URI;
@@ -31,23 +33,32 @@ import java.util.concurrent.TimeUnit;
 public class Itemszop {
     private static Itemszop INSTANCE;
     private static Serializer SERIALIZER;
-    String serverId;
-    String secret;
+    private final Path dataDirectory;
+    private final File dataDirectoryFile;
+    private final File configFile;
     public String firebaseWebsocketUrl;
     private static Logger logger;
     private static ProxyServer server;
-    private final Path dataDirectory;
     public static WebSocket socket;
-    private boolean WebSocketReconnect;
+    String serverId;
+    String secret;
 
     @Inject
     public Itemszop(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory) {
         Itemszop.server = server;
         Itemszop.logger = logger;
         this.dataDirectory = dataDirectory;
+
+        this.dataDirectoryFile = dataDirectory.toFile();
+        this.configFile = new File(this.dataDirectoryFile, "config.yml");
     }
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
+
+        CommandManager manager = this.server.getCommandManager();
+        manager.unregister("itemszopv");
+        manager.register("itemszopv", new ItemszopCommand(this), "itemszopvelocity", "vitemszop");
+
         INSTANCE = this;
         logger.info("\n _                                         \n" +
                 "| |  _                                     \n" +
@@ -112,10 +123,7 @@ public class Itemszop {
     public static Serializer getSerializer() {
         return SERIALIZER;
     }
-    public void reloadPlugin() { Settings.IMP.reload(new File(this.getDataFolder().toPath().toFile().getAbsoluteFile(), "config.yml")); }
-    private File getDataFolder() {
-        return getDataFolder();
-    }
+    public void reloadPlugin() { Settings.IMP.reload(new File(configFile, "config.yml")); }
     public void WebSocketConnect() {
         try {
             socket = new WebSocket(new URI(firebaseWebsocketUrl));

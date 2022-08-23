@@ -11,4 +11,13 @@ public class Settings extends YamlConfig {
     public Integer CHECK_TIME = 120;
     public String CHECK_CONSOLE = "&eCheck the console to see the connection status with the store.";
     public String KEY = "";
+    @Comment({
+            "Available serializers:",
+            "LEGACY_AMPERSAND - \"&c&lExample &c&9Text\".",
+            "LEGACY_SECTION - \"§c§lExample §c§9Text\".",
+            "MINIMESSAGE - \"<bold><red>Example</red> <blue>Text</blue></bold>\". (https://webui.adventure.kyori.net/)",
+            "GSON - \"[{\"text\":\"Example\",\"bold\":true,\"color\":\"red\"},{\"text\":\" \",\"bold\":true},{\"text\":\"Text\",\"bold\":true,\"color\":\"blue\"}]\". (https://minecraft.tools/en/json_text.php/)",
+            "GSON_COLOR_DOWNSAMPLING - Same as GSON, but uses downsampling."
+    })
+    public String SERIALIZER = "LEGACY_AMPERSAND";
 }
