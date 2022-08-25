@@ -1,5 +1,6 @@
 rootProject.name = 'itemszop'
 include 'spigot'
+include 'BungeeCord'
 include 'velocity'
 include 'Commons'
 

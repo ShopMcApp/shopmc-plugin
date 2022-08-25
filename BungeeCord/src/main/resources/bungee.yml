@@ -1,0 +1,4 @@
+name: ItemszopBungeecord
+version: '1.0'
+author: ReferTV, drmike, mrpiesel
+main: tk.itemszop.itemszopbungeecord.Itemszop
