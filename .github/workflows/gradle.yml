@@ -66,5 +66,26 @@ jobs:
           prerelease: true
           name: Spigot Plugin JDK ${{ matrix.java }} dev-build
           tag: dev-build-jdk-${{ matrix.java }}
+      - name: Itemszop plugin
+        run: ./gradlew build
+      - name: Upload Itemszop plugin
+        uses: actions/upload-artifact@v3.0.0
+        with:
+          name: Itemszop plugin Built On JDK ${{ matrix.java }}
+          path: "BungeeCord/build/libs/Itemszop*-all.jar"
+      - uses: dev-drprasad/delete-tag-and-release@v0.2.0
+        with:
+          delete_release: true
+          tag_name: dev-build-jdk-${{ matrix.java }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Release the build
+        uses: ncipollo/release-action@v1.10.0
+        with:
+          artifacts: "Spigot/build/libs/Itemszop*-all.jar"
+          body: ${{ join(github.event.commits.*.message, '\n') }}
+          prerelease: true
+          name: Spigot Plugin JDK ${{ matrix.java }} dev-build
+          tag: dev-build-jdk-${{ matrix.java }}
 
 
