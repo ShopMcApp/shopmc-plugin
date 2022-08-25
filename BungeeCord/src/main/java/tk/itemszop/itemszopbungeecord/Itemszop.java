@@ -53,7 +53,7 @@ public final class Itemszop extends Plugin {
                 e.printStackTrace();
             }
             WebSocketConnect();
-            getProxy().getScheduler().schedule(this, new WebSocketReconnectTask(), 1, Settings.IMP.CHECK_TIME, TimeUnit.SECONDS);
+            getProxy().getScheduler().schedule(this, new WebSocketReconnectTask(), 10, Settings.IMP.CHECK_TIME, TimeUnit.SECONDS);
         }
         if (Settings.IMP.DEBUG) { getLogger().info("Key: " + secret + "\nWebsocket URL: " + firebaseWebsocketUrl + "\nServer ID: " + serverId); }
         }
