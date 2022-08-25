@@ -8,6 +8,7 @@ import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 
 import com.velocitypowered.api.proxy.ProxyServer;
+import com.velocitypowered.api.scheduler.ScheduledTask;
 import net.elytrium.java.commons.mc.serialization.Serializer;
 import org.slf4j.Logger;
 import tk.itemszop.itemszopvelocity.commands.ItemszopCommand;
@@ -40,6 +41,7 @@ public class Itemszop {
     private static Logger logger;
     private static ProxyServer server;
     public static WebSocket socket;
+    ScheduledTask websocketReconnectTask;
     String serverId;
     String secret;
 
@@ -105,13 +107,14 @@ public class Itemszop {
         return logger;
     }
     public void WebSocketReconnectTask() {
-        server.getScheduler()
+       websocketReconnectTask = server.getScheduler()
                 .buildTask(INSTANCE, () -> {
                     if (!socket.isOpen()) {
                         if (Settings.IMP.DEBUG) { logger.info("Reconnecting to websocket..."); }
                         socket.reconnect();
                     } else {
                         // TODO cancel task
+                        websocketReconnectTask.cancel();
                     }
                 })
                 .repeat(Settings.IMP.CHECK_TIME, TimeUnit.MINUTES)
