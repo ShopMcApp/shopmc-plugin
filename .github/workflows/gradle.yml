@@ -1,35 +1,38 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
-
 name: Java CI with Gradle
 
 on: [ push, pull_request ]
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         java: [ 11, 17 ]
       fail-fast: true
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.0.1
+        uses: actions/checkout@v3.0.0
       - name: Set up JDK ${{ matrix.java }}
-        uses: actions/setup-java@v3.1.1
+        uses: actions/setup-java@v3.0.0
         with:
           distribution: adopt
           java-version: ${{ matrix.java }}
-      - name: Itemszop plugin
+      - name: Build Itemszop
         run: ./gradlew build
-      - name: Upload Itemszop plugin
+      - name: Upload Itemszop
         uses: actions/upload-artifact@v3.0.0
         with:
-          name: Itemszop plugin Built On JDK ${{ matrix.java }}
+          name: Itemszop Built On ${{ matrix.java }} JDK
+          path: "Spigot/build/libs/Itemszop*.jar"
+      - name: Upload Itemszop
+        uses: actions/upload-artifact@v3.0.0
+        with:
+          name: Itemszop Built On ${{ matrix.java }} JDK
+          path: "BungeeCord/build/libs/Itemszop*.jar"
+      - name: Upload Itemszop
+        uses: actions/upload-artifact@v3.0.0
+        with:
+          name: Itemszop Built On ${{ matrix.java }} JDK
           path: "Velocity/build/libs/Itemszop*.jar"
       - uses: dev-drprasad/delete-tag-and-release@v0.2.0
         with:
@@ -38,39 +41,26 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Release the build
-        uses: ncipollo/release-action@v1.10.0
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "Spigot/build/libs/Itemszop*.jar"
+          body: ${{ join(github.event.commits.*.message, '\n') }}
+          prerelease: true
+          name: JDK ${{ matrix.java }} Dev-build
+          tag: dev-build-jdk-${{ matrix.java }}
+      - name: Release the build
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "BungeeCord/build/libs/Itemszop*.jar"
+          body: ${{ join(github.event.commits.*.message, '\n') }}
+          prerelease: true
+          name: JDK ${{ matrix.java }} Dev-build
+          tag: dev-build-jdk-${{ matrix.java }}
+      - name: Release the build
+        uses: ncipollo/release-action@v1
         with:
           artifacts: "Velocity/build/libs/Itemszop*.jar"
           body: ${{ join(github.event.commits.*.message, '\n') }}
           prerelease: true
-          name: Velocity Plugin JDK ${{ matrix.java }} dev-build
+          name: JDK ${{ matrix.java }} Dev-build
           tag: dev-build-jdk-${{ matrix.java }}
-      - name: Itemszop plugin
-        run: ./gradlew build
-      - name: Upload Itemszop plugin
-        uses: actions/upload-artifact@v3.0.0
-        with:
-          name: Itemszop plugin Built On JDK ${{ matrix.java }}
-          path: |
-          Spigot/build/libs/Itemszop*.jar
-          Velocity/build/libs/Itemszop*.jar
-          BungeeCord/build/libs/Itemszop*.jar
-      - uses: dev-drprasad/delete-tag-and-release@v0.2.0
-        with:
-          delete_release: true
-          tag_name: dev-build-jdk-${{ matrix.java }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Release the build
-        uses: ncipollo/release-action@v1.10.0
-        with:
-          artifacts: |
-            Spigot/build/libs/Itemszop*.jar
-            BungeeCord/build/libs/Itemszop*.jar
-            Velocity/build/libs/Itemszop*.jar
-          body: ${{ join(github.event.commits.*.message, '\n') }}
-          prerelease: true
-          name: Spigot Plugin JDK ${{ matrix.java }} dev-build
-          tag: dev-build-jdk-${{ matrix.java }}
-
-
