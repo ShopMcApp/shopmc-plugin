@@ -35,7 +35,6 @@ public class Itemszop {
     private static Itemszop INSTANCE;
     private static Serializer SERIALIZER;
     private final Path dataDirectory;
-    private final File dataDirectoryFile;
     private final File configFile;
     public String firebaseWebsocketUrl;
     private static Logger logger;
@@ -51,8 +50,8 @@ public class Itemszop {
         Itemszop.logger = logger;
         this.dataDirectory = dataDirectory;
 
-        this.dataDirectoryFile = dataDirectory.toFile();
-        this.configFile = new File(this.dataDirectoryFile, "config.yml");
+        File dataDirectoryFile = dataDirectory.toFile();
+        this.configFile = new File(dataDirectoryFile, "config.yml");
     }
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
