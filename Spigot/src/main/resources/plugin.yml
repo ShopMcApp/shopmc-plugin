@@ -1,0 +1,13 @@
+name: Itemszop-Plugin
+version: '1.0'
+main: tk.itemszop.itemszopspigot.Itemszop
+prefix: Itemszop-plugin
+website: itemszop.tk
+api-version: 1.19
+authors:
+  - ReferTV
+  - drmike
+  - MrPiesel
+
+commands:
+  itemszop:
