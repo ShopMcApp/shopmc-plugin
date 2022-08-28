@@ -11,15 +11,6 @@ public class itemszop_cmd extends CommandBase {
     @Override
     protected boolean onCommand(Player p, Command cmd, String label, String[] args) {
         if (args.length == 0) {
-            if (Settings.IMP.SERIALIZER.equals("MINIMESSAGE")){
-                p.sendMessage(getSerializer().deserialize("<color:#b6eb17>This server using Itemszop plugin.</color>\n" +
-                        "Designed by " + getInstance().getDescription().getAuthors() + "\n" +
-                        "\n" +
-                        "Available subcommands:\n" +
-                        "⁜ <click:run_command:/itemszop reload>/itemszop reload</click>\n" +
-                        "⁜ <click:run_command:/itemszop reconnect>/itemszop reconnect</click>\n" +
-                        "⁜ <click:run_command:/itemszop test>/itemszop test</click>"));
-            } else {
                 p.sendMessage("§aThis server using Itemszop plugin.\n" +
                         "§fDesigned by " + getInstance().getDescription().getAuthors() + "\n" +
                         "\n" +
@@ -27,8 +18,6 @@ public class itemszop_cmd extends CommandBase {
                         "⁜ /itemszop reload\n" +
                         "⁜ /itemszop reconnect\n" +
                         "⁜ /itemszop test");
-            }
-            return false;
         }
         switch(args[0]) {
             case "reload": {
