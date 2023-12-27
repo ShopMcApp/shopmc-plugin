@@ -1,3 +1,3 @@
 # ShopMC Plugin 💸
 
-Plugin for minecraft server that run commands on every purchase in ShopMC.
+Minecraft plugin that run commands on every purchase in ShopMC.
