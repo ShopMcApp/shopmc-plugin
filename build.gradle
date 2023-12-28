@@ -37,6 +37,14 @@ allprojects {
             url = 'https://repo.papermc.io/repository/maven-public/'
         }
     }
+
+    shadowJar {
+        dependencies {
+            exclude(dependency('org.jetbrains:annotations'))
+        }
+
+        relocate 'java_websocket', 'lib.java_websocket'
+    }
 }
 
 dependencies {
