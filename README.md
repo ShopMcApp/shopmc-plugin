@@ -1,3 +1,18 @@
-# ShopMC Plugin 💸
+# ShopMC Plugin
 
-Minecraft plugin that run commands on every purchase in ShopMC.
+Introducing the ShopMC Plugin, a dynamic integration that links your Minecraft server to a meticulously crafted itemshop on [ShopMC](https://shopmc.com/).
+
+## Compatibility
+
+Tested and supported Minecraft versions:
+- 1.8 to 1.20
+
+## Supported Platforms
+
+Explore ShopMC Plugin compatibility on various server platforms:
+
+| Platform                 | Compatible Derivatives                         |
+|--------------------------|-------------------------------------------------|
+| Bukkit                   | Spigot, Paper, and more                         |
+| BungeeCord               | BungeeCord, Waterfall, and similar derivatives  |
+| Velocity                 | Supported derivatives                           |
