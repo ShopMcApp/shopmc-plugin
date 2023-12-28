@@ -27,8 +27,8 @@ jobs:
       - name: Upload Bungeecord plugin
         uses: actions/upload-artifact@v4
         with:
-          name: ShopMC Bungeecord plugin built on ${{ matrix.java }} JDK
-          path: "bungeecord/build/libs/*.jar"
+          name: ShopMC Bungee plugin built on ${{ matrix.java }} JDK
+          path: "bungee/build/libs/*.jar"
       - name: Upload Velocity plugin
         uses: actions/upload-artifact@v4
         with:
