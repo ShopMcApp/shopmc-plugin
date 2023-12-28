@@ -23,44 +23,14 @@ jobs:
         uses: actions/upload-artifact@v3.0.0
         with:
           name: ShopMC Built On ${{ matrix.java }} JDK
-          path: "Spigot/build/libs/Itemszop*.jar"
+          path: "bukkit/build/libs/*.jar"
       - name: Upload ShopMC
         uses: actions/upload-artifact@v3.0.0
         with:
           name: ShopMC Built On ${{ matrix.java }} JDK
-          path: "BungeeCord/build/libs/Itemszop*.jar"
+          path: "bungeecord/build/libs/*.jar"
       - name: Upload ShopMC
         uses: actions/upload-artifact@v3.0.0
         with:
           name: ShopMC Built On ${{ matrix.java }} JDK
-          path: "Velocity/build/libs/Itemszop*.jar"
-      - uses: dev-drprasad/delete-tag-and-release@v0.2.0
-        with:
-          delete_release: true
-          tag_name: dev-build-jdk-${{ matrix.java }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Release the build
-        uses: ncipollo/release-action@v1
-        with:
-          artifacts: "Spigot/build/libs/Itemszop*.jar"
-          body: ${{ join(github.event.commits.*.message, '\n') }}
-          prerelease: true
-          name: JDK ${{ matrix.java }} Dev-build
-          tag: dev-build-jdk-${{ matrix.java }}
-      - name: Release the build
-        uses: ncipollo/release-action@v1
-        with:
-          artifacts: "BungeeCord/build/libs/Itemszop*.jar"
-          body: ${{ join(github.event.commits.*.message, '\n') }}
-          prerelease: true
-          name: JDK ${{ matrix.java }} Dev-build
-          tag: dev-build-jdk-${{ matrix.java }}
-      - name: Release the build
-        uses: ncipollo/release-action@v1
-        with:
-          artifacts: "Velocity/build/libs/Itemszop*.jar"
-          body: ${{ join(github.event.commits.*.message, '\n') }}
-          prerelease: true
-          name: JDK ${{ matrix.java }} Dev-build
-          tag: dev-build-jdk-${{ matrix.java }}
+          path: "velocity/build/libs/*.jar"
