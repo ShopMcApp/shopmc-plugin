@@ -1,5 +1,6 @@
 package app.shopmc.plugin.bukkit;
 
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -12,22 +13,21 @@ public class BukkitShopMCPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         String serverURI = "wss://router.shopmc.app";
-        getLogger().info("start");
+        Bukkit.getConsoleSender().sendMessage("start");
         socket = new WebSocketClient(URI.create(serverURI)) {
             @Override
             public void onOpen(ServerHandshake handshakedata) {
-                getLogger().info("WebSocket connection opened");
+                Bukkit.getConsoleSender().sendMessage("WebSocket connection opened");
             }
 
             @Override
             public void onMessage(String message) {
-                getLogger().info("Received message: " + message);
-                // Obsługa otrzymanego komunikatu
+                Bukkit.getConsoleSender().sendMessage("Received message: " + message);
             }
 
             @Override
             public void onClose(int code, String reason, boolean remote) {
-                getLogger().info("WebSocket connection closed");
+                Bukkit.getConsoleSender().sendMessage("WebSocket connection closed");
             }
 
             @Override
