@@ -22,15 +22,15 @@ jobs:
       - name: Upload Bukkit plugin
         uses: actions/upload-artifact@v4
         with:
-          name: ShopMC Built On ${{ matrix.java }} JDK
+          name: ShopMC Bukkit plugin built on ${{ matrix.java }} JDK
           path: "bukkit/build/libs/*.jar"
       - name: Upload Bungeecord plugin
         uses: actions/upload-artifact@v4
         with:
-          name: ShopMC Built On ${{ matrix.java }} JDK
+          name: ShopMC Bungeecord plugin built on ${{ matrix.java }} JDK
           path: "bungeecord/build/libs/*.jar"
       - name: Upload Velocity plugin
         uses: actions/upload-artifact@v4
         with:
-          name: ShopMC Built On ${{ matrix.java }} JDK
+          name: ShopMC Velocity plugin built on ${{ matrix.java }} JDK
           path: "velocity/build/libs/*.jar"
