@@ -1,6 +1,6 @@
 rootProject.name = 'shopmc-plugin'
 
-include 'commons'
+include 'common'
 include 'bukkit'
 include 'bungee'
 include 'velocity'
