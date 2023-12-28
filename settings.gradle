@@ -1,6 +1,6 @@
-rootProject.name = 'itemszop'
-include 'spigot'
-include 'BungeeCord'
-include 'velocity'
-include 'Commons'
+rootProject.name = 'shopmc-plugin'
 
+include 'commons'
+include 'bukkit'
+include 'bungee'
+include 'velocity'

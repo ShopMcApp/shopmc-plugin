@@ -1,4 +1,4 @@
-package tk.itemszop.itemszopbungeecord;
+package app.shopmc.plugin.bungee;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

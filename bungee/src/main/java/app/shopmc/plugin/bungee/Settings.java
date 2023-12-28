@@ -1,4 +1,4 @@
-package tk.itemszop.itemszopbungeecord;
+package app.shopmc.plugin.bungee;
 
 import net.elytrium.java.commons.config.YamlConfig;
 

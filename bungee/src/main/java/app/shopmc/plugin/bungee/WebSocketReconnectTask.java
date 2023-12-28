@@ -1,6 +1,6 @@
-package tk.itemszop.itemszopbungeecord;
+package app.shopmc.plugin.bungee;
 
-import static tk.itemszop.itemszopbungeecord.Itemszop.socket;
+import static app.shopmc.plugin.bungee.Itemszop.socket;
 
 
 public class WebSocketReconnectTask implements Runnable {

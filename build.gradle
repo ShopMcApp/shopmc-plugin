@@ -1,17 +1,46 @@
 plugins {
-    id 'java'
+    id 'java-library'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
-compileJava {
-    getOptions().setEncoding("UTF-8")
+allprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'com.github.johnrengelman.shadow'
+
+    group = 'app.shopmc.plugin'
+    version = '1.0'
+
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+
+    compileJava.options.encoding = 'UTF-8'
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+    }
+
+    repositories {
+        mavenCentral()
+        mavenLocal()
+
+        maven {
+            name = 'spigotmc-repo'
+            url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+        }
+
+        maven {
+            name = 'bungeecord-repo'
+            url = 'https://oss.sonatype.org/content/repositories/snapshots'
+        }
+
+        maven {
+            name = 'velocity-repo'
+            url = 'https://repo.papermc.io/repository/maven-public/'
+        }
+    }
 }
 
-gradle.buildFinished {
-    project.buildDir.deleteDir()
-}
-
-java {
-    setSourceCompatibility(JavaVersion.VERSION_1_8)
-    setTargetCompatibility(JavaVersion.VERSION_1_8)
+dependencies {
+    implementation project(':bukkit')
+    implementation project(':bungee')
+    implementation project(':velocity')
 }
