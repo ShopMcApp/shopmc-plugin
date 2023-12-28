@@ -39,11 +39,12 @@ allprojects {
     }
 
     shadowJar {
+        mergeServiceFiles()
         dependencies {
             exclude(dependency('org.jetbrains:annotations'))
+            include(dependency('org.java-websocket:Java-WebSocket:1.5.3'))
         }
-
-        relocate 'java_websocket', 'lib.java_websocket'
+        configurations = [project.configurations.compile]
     }
 }
 
