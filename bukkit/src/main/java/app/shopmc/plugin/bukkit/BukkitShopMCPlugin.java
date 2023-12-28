@@ -6,7 +6,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class BukkitShopMCPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
-        Bukkit.getConsoleSender().sendMessage("WORKING!");
+        Bukkit.getConsoleSender().sendMessage("BUKKIT WORKING!");
     }
 
     @Override

@@ -1,4 +1,4 @@
-name: ItemszopBungeecord
+name: ShopMCPlugin
 version: '1.0'
-author: ReferTV, drmike, mrpiesel
-main: tk.itemszop.itemszopbungeecord.Itemszop
+author: michaljaz
+main: app.shopmc.plugin.bungee.BungeeShopMCPlugin

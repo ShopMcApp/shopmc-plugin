@@ -4,4 +4,4 @@ api-version: 1.13
 main: app.shopmc.plugin.bukkit.BukkitShopMCPlugin
 description: "Process orders from your ShopMC itemshop."
 website: https://shopmc.app
-author: "Michał Jażdżyk"
+author: michaljaz
