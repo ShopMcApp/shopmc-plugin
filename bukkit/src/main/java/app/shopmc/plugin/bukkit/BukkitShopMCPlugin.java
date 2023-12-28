@@ -1,15 +1,13 @@
 package app.shopmc.plugin.bukkit;
 
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.java_websocket.WebSocket;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
 import java.net.URI;
 
 public class BukkitShopMCPlugin extends JavaPlugin {
-    public static WebSocket socket;
+    public static WebSocketClient socket;
 
     @Override
     public void onEnable() {
@@ -37,7 +35,8 @@ public class BukkitShopMCPlugin extends JavaPlugin {
                 ex.printStackTrace();
             }
         };
-
+        socket.connect();
+        socket.setConnectionLostTimeout(0);
     }
 
     @Override
