@@ -1,10 +1,10 @@
 name: Java CI with Gradle
 
-on: [ push, pull_request ]
+on: [ push ]
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         java: [ 11, 17 ]
@@ -17,22 +17,22 @@ jobs:
         with:
           distribution: adopt
           java-version: ${{ matrix.java }}
-      - name: Build Itemszop
+      - name: Build ShopMC
         run: ./gradlew build
-      - name: Upload Itemszop
+      - name: Upload ShopMC
         uses: actions/upload-artifact@v3.0.0
         with:
-          name: Itemszop Built On ${{ matrix.java }} JDK
+          name: ShopMC Built On ${{ matrix.java }} JDK
           path: "Spigot/build/libs/Itemszop*.jar"
-      - name: Upload Itemszop
+      - name: Upload ShopMC
         uses: actions/upload-artifact@v3.0.0
         with:
-          name: Itemszop Built On ${{ matrix.java }} JDK
+          name: ShopMC Built On ${{ matrix.java }} JDK
           path: "BungeeCord/build/libs/Itemszop*.jar"
-      - name: Upload Itemszop
+      - name: Upload ShopMC
         uses: actions/upload-artifact@v3.0.0
         with:
-          name: Itemszop Built On ${{ matrix.java }} JDK
+          name: ShopMC Built On ${{ matrix.java }} JDK
           path: "Velocity/build/libs/Itemszop*.jar"
       - uses: dev-drprasad/delete-tag-and-release@v0.2.0
         with:
