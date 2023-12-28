@@ -19,18 +19,18 @@ jobs:
           java-version: ${{ matrix.java }}
       - name: Build ShopMC
         run: ./gradlew build
-      - name: Upload ShopMC
-        uses: actions/upload-artifact@v3.0.0
+      - name: Upload Bukkit plugin
+        uses: actions/upload-artifact@v4
         with:
           name: ShopMC Built On ${{ matrix.java }} JDK
           path: "bukkit/build/libs/*.jar"
-      - name: Upload ShopMC
-        uses: actions/upload-artifact@v3.0.0
+      - name: Upload Bungeecord plugin
+        uses: actions/upload-artifact@v4
         with:
           name: ShopMC Built On ${{ matrix.java }} JDK
           path: "bungeecord/build/libs/*.jar"
-      - name: Upload ShopMC
-        uses: actions/upload-artifact@v3.0.0
+      - name: Upload Velocity plugin
+        uses: actions/upload-artifact@v4
         with:
           name: ShopMC Built On ${{ matrix.java }} JDK
           path: "velocity/build/libs/*.jar"
