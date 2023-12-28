@@ -1,13 +1,7 @@
-name: Itemszop-Plugin
+name: ShopMCPlugin
 version: '1.0'
-main: tk.itemszop.itemszopspigot.Itemszop
-prefix: Itemszop-plugin
-website: itemszop.tk
-api-version: 1.19
-authors:
-  - ReferTV
-  - drmike
-  - MrPiesel
-
-commands:
-  itemszop:
+api-version: 1.13
+main: app.shopmc.plugin.bukkit.BukkitShopMCPlugin
+description: "Process orders from your ShopMC itemshop."
+website: https://shopmc.app
+author: "Michał Jażdżyk"
