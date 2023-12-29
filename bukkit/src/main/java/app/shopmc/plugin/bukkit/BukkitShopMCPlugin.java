@@ -1,5 +1,7 @@
 package app.shopmc.plugin.bukkit;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.java_websocket.client.WebSocketClient;
@@ -13,7 +15,6 @@ public class BukkitShopMCPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         String serverURI = "wss://router.shopmc.app/test";
-        Bukkit.getConsoleSender().sendMessage("start");
         BukkitShopMCPlugin _this = this;
         socket = new WebSocketClient(URI.create(serverURI))  {
             @Override
@@ -24,8 +25,11 @@ public class BukkitShopMCPlugin extends JavaPlugin {
             @Override
             public void onMessage(String message) {
                 Bukkit.getConsoleSender().sendMessage("Received message: " + message);
-                Bukkit.getScheduler().runTask(_this, () -> Bukkit.dispatchCommand(getServer().getConsoleSender(), message));
-
+                Gson gson = new Gson();
+                JsonObject jsonObject = gson.fromJson(message, JsonObject.class);
+                String command = jsonObject.get("command").getAsString();
+                Bukkit.getConsoleSender().sendMessage("Command to run: " + command);
+                Bukkit.getScheduler().runTask(_this, () -> Bukkit.dispatchCommand(getServer().getConsoleSender(), command));
             }
 
             @Override
