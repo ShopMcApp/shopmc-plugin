@@ -1,7 +1,5 @@
 package app.shopmc.plugin.config;
 
-import app.shopmc.plugin.config.ConfigLoader;
-
 public class Config {
     public final String customer;
     public final String server;
@@ -9,6 +7,7 @@ public class Config {
     public Config(final ConfigLoader loader) throws EmptyConfigFieldException {
         this.customer = loader.getString("customer");
         this.server = loader.getString("server");
+        this.checkValues();
     }
 
     private void checkValues() throws EmptyConfigFieldException {
