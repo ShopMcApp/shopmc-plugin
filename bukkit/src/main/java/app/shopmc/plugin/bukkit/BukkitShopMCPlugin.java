@@ -1,7 +1,5 @@
 package app.shopmc.plugin.bukkit;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonSyntaxException;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.java_websocket.client.WebSocketClient;
@@ -46,6 +44,6 @@ public class BukkitShopMCPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
-
+        socket.close();
     }
 }
