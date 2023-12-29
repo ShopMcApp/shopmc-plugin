@@ -26,7 +26,7 @@ public class BukkitShopMCPlugin extends JavaPlugin {
             Bukkit.getPluginManager().disablePlugin(this);
         }
 
-        String serverURI = "wss://router.shopmc.app/test";
+        String serverURI = "wss://router.shopmc.app/" + config.customer + "/" + config.server;
         BukkitShopMCPlugin _this = this;
         socket = new WebSocketClient(URI.create(serverURI))  {
             @Override
