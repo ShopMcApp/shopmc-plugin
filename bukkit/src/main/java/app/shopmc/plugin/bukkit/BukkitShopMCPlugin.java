@@ -60,6 +60,8 @@ public class BukkitShopMCPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        socket.close();
+        if(socket != null){
+            socket.close();
+        }
     }
 }
