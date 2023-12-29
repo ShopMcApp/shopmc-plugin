@@ -1,5 +1,7 @@
 package app.shopmc.plugin.bukkit;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonSyntaxException;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.java_websocket.client.WebSocketClient;
@@ -14,7 +16,8 @@ public class BukkitShopMCPlugin extends JavaPlugin {
     public void onEnable() {
         String serverURI = "wss://router.shopmc.app";
         Bukkit.getConsoleSender().sendMessage("start");
-        socket = new WebSocketClient(URI.create(serverURI)) {
+        BukkitShopMCPlugin _this = this;
+        socket = new WebSocketClient(URI.create(serverURI))  {
             @Override
             public void onOpen(ServerHandshake handshakedata) {
                 Bukkit.getConsoleSender().sendMessage("WebSocket connection opened");
@@ -23,6 +26,8 @@ public class BukkitShopMCPlugin extends JavaPlugin {
             @Override
             public void onMessage(String message) {
                 Bukkit.getConsoleSender().sendMessage("Received message: " + message);
+                Bukkit.getScheduler().runTask(_this, () -> Bukkit.dispatchCommand(getServer().getConsoleSender(), message));
+
             }
 
             @Override
