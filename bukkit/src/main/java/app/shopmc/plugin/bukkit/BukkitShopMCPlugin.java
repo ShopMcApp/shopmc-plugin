@@ -3,6 +3,7 @@ package app.shopmc.plugin.bukkit;
 import app.shopmc.plugin.config.Config;
 import app.shopmc.plugin.config.EmptyConfigFieldException;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.java_websocket.client.WebSocketClient;
@@ -31,7 +32,7 @@ public class BukkitShopMCPlugin extends JavaPlugin {
         socket = new WebSocketClient(URI.create(serverURI))  {
             @Override
             public void onOpen(ServerHandshake handshakedata) {
-                Bukkit.getConsoleSender().sendMessage("ShopMC connection opened");
+                Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "ShopMC connection opened");
             }
 
             @Override
@@ -43,7 +44,7 @@ public class BukkitShopMCPlugin extends JavaPlugin {
 
             @Override
             public void onClose(int code, String reason, boolean remote) {
-                Bukkit.getConsoleSender().sendMessage("ShopMC connection closed");
+                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "ShopMC connection closed");
                 new BukkitRunnable() {
                     @Override
                     public void run() {
