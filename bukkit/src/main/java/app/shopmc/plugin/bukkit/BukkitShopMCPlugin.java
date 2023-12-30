@@ -32,11 +32,12 @@ public class BukkitShopMCPlugin extends JavaPlugin {
         socket = new WebSocketClient(URI.create(serverURI))  {
             @Override
             public void onOpen(ServerHandshake handshakedata) {
-                Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "ShopMC connection opened");
+                Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[ShopMC] connection opened");
             }
 
             @Override
             public void onMessage(String commands) {
+                Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[ShopMC] Received commands: " + ChatColor.RESET + commands);
                 for (String command : commands.split("\n")) {
                     Bukkit.getScheduler().runTask(_this, () -> Bukkit.dispatchCommand(getServer().getConsoleSender(), command));
                 }
@@ -44,7 +45,7 @@ public class BukkitShopMCPlugin extends JavaPlugin {
 
             @Override
             public void onClose(int code, String reason, boolean remote) {
-                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "ShopMC connection closed");
+                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[ShopMC] connection closed");
                 new BukkitRunnable() {
                     @Override
                     public void run() {
