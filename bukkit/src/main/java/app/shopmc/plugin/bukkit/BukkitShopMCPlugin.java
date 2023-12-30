@@ -39,9 +39,10 @@ public class BukkitShopMCPlugin extends JavaPlugin {
                 Bukkit.getConsoleSender().sendMessage("Received message: " + message);
                 Gson gson = new Gson();
                 JsonObject jsonObject = gson.fromJson(message, JsonObject.class);
-                String command = jsonObject.get("command").getAsString();
-                Bukkit.getConsoleSender().sendMessage("Command to run: " + command);
-                Bukkit.getScheduler().runTask(_this, () -> Bukkit.dispatchCommand(getServer().getConsoleSender(), command));
+                String commands = jsonObject.get("commands").getAsString();
+                for (String command : commands.split("\n")) {
+                    Bukkit.getScheduler().runTask(_this, () -> Bukkit.dispatchCommand(getServer().getConsoleSender(), command));
+                }
             }
 
             @Override
