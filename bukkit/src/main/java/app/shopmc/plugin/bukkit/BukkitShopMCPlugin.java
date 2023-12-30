@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
@@ -48,6 +49,16 @@ public class BukkitShopMCPlugin extends JavaPlugin {
             @Override
             public void onClose(int code, String reason, boolean remote) {
                 Bukkit.getConsoleSender().sendMessage("WebSocket connection closed");
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        if(!socket.isOpen()){
+                            socket.reconnect();
+                        }else{
+                            cancel();
+                        }
+                    }
+                }.runTaskLater(_this, 100);
             }
 
             @Override
