@@ -2,8 +2,6 @@ package app.shopmc.plugin.bukkit;
 
 import app.shopmc.plugin.config.Config;
 import app.shopmc.plugin.config.EmptyConfigFieldException;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -37,12 +35,7 @@ public class BukkitShopMCPlugin extends JavaPlugin {
             }
 
             @Override
-            public void onMessage(String message) {
-                Bukkit.getConsoleSender().sendMessage("Received message: " + message);
-                Gson gson = new Gson();
-                JsonObject jsonObject = gson.fromJson(message, JsonObject.class);
-                String commands = jsonObject.get("commands").getAsString();
-                Bukkit.getConsoleSender().sendMessage("Received messagex: " + commands);
+            public void onMessage(String commands) {
                 for (String command : commands.split("\n")) {
                     Bukkit.getScheduler().runTask(_this, () -> Bukkit.dispatchCommand(getServer().getConsoleSender(), command));
                 }
