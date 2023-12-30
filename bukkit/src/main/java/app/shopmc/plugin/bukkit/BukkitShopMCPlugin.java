@@ -31,7 +31,7 @@ public class BukkitShopMCPlugin extends JavaPlugin {
         socket = new WebSocketClient(URI.create(serverURI))  {
             @Override
             public void onOpen(ServerHandshake handshakedata) {
-                Bukkit.getConsoleSender().sendMessage("WebSocket connection opened");
+                Bukkit.getConsoleSender().sendMessage("ShopMC connection opened");
             }
 
             @Override
@@ -43,7 +43,7 @@ public class BukkitShopMCPlugin extends JavaPlugin {
 
             @Override
             public void onClose(int code, String reason, boolean remote) {
-                Bukkit.getConsoleSender().sendMessage("WebSocket connection closed");
+                Bukkit.getConsoleSender().sendMessage("ShopMC connection closed");
                 new BukkitRunnable() {
                     @Override
                     public void run() {
@@ -53,7 +53,7 @@ public class BukkitShopMCPlugin extends JavaPlugin {
                             cancel();
                         }
                     }
-                }.runTaskLater(_this, 100);
+                }.runTaskLater(_this, 200);
             }
 
             @Override
