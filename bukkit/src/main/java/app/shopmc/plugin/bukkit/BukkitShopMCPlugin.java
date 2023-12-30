@@ -25,6 +25,7 @@ public class BukkitShopMCPlugin extends JavaPlugin {
         } catch (final EmptyConfigFieldException exception) {
             this.getLogger().severe(exception.getMessage());
             Bukkit.getPluginManager().disablePlugin(this);
+            return;
         }
 
         String serverURI = "wss://router.shopmc.app/" + config.key;
