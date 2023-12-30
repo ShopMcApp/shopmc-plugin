@@ -1,7 +1,3 @@
-# Customer ID
-# You can find it https://shopmc.app/shop/[ID]
-customer: ""
-
-# Server ID
+# Plugin Key
 # You can find it in shopmc dashboard (edit server modal)
-server: ""
+key: ""
