@@ -16,3 +16,5 @@ Explore ShopMC Plugin compatibility on various server platforms:
 | Bukkit                   | Spigot, Paper, and more                         |
 | BungeeCord               | BungeeCord, Waterfall, and similar derivatives  |
 | Velocity                 | Supported derivatives                           |
+
+**Note:** Currently, the ShopMC Plugin is functional only with the Bukkit platform, including derivatives such as Spigot and Paper. Compatibility with other platforms is under development and will be announced in future updates.
