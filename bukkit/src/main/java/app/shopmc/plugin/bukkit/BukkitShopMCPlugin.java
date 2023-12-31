@@ -43,6 +43,7 @@ public class BukkitShopMCPlugin extends JavaPlugin {
                 public void onMessage(String commands) {
                     Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[ShopMC] Received commands: " + ChatColor.RESET + commands);
                     for (String command : commands.split("\n")) {
+                        logCommandExecutionTime(command);
                         Bukkit.getScheduler().runTask(BukkitShopMCPlugin.this, () ->
                                 Bukkit.dispatchCommand(getServer().getConsoleSender(), command));
                     }
@@ -78,6 +79,21 @@ public class BukkitShopMCPlugin extends JavaPlugin {
     public void onDisable() {
         if (socket != null) {
             socket.close();
+        }
+    }
+
+    private void logCommandExecutionTime(String command) {
+        long startTime = System.nanoTime();
+
+        // Execute the command here
+
+        long endTime = System.nanoTime();
+        long executionTime = endTime - startTime;
+
+        if (executionTime < 1_000_000) {
+            getLogger().info("[ShopMC] Command executed in " + executionTime + " ns: " + command);
+        } else {
+            getLogger().info("[ShopMC] Command executed in " + (executionTime / 1_000_000) + " ms: " + command);
         }
     }
 }
