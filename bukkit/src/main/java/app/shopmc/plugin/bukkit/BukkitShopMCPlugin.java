@@ -7,16 +7,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
 import java.io.File;
-import java.net.URI;
 import java.util.logging.Level;
 
 public class BukkitShopMCPlugin extends JavaPlugin {
     private Socket socket;
-    public static Config config;
+    private Config config;
 
     @Override
     public void onEnable() {
@@ -36,17 +34,28 @@ public class BukkitShopMCPlugin extends JavaPlugin {
             socket = new Socket(config.key) {
                 @Override
                 public void onCommand(String command) {
-                    logCommandExecutionTime(command);
+                    long startTime = System.nanoTime();
+
+                    Bukkit.getScheduler().runTask(BukkitShopMCPlugin.this, () -> Bukkit.dispatchCommand(getServer().getConsoleSender(), command));
+
+                    long endTime = System.nanoTime();
+                    long executionTime = endTime - startTime;
+
+                    if (executionTime < 1_000_000) {
+                        log("Command executed in " + executionTime + " ns: " + command);
+                    } else {
+                        log("Command executed in " + (executionTime / 1_000_000) + " ms: " + command);
+                    }
                 }
 
                 @Override
                 public void onOpen(ServerHandshake serverHandshake) {
-                    Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[ShopMC] connection opened");
+                    log("Connection opened");
                 }
 
                 @Override
                 public void onClose(int code, String reason, boolean remote) {
-                    Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[ShopMC] connection closed");
+                    log("Connection closed");
                     new BukkitRunnable() {
                         @Override
                         public void run() {
@@ -77,18 +86,7 @@ public class BukkitShopMCPlugin extends JavaPlugin {
         }
     }
 
-    private void logCommandExecutionTime(String command) {
-        long startTime = System.nanoTime();
-
-        Bukkit.getScheduler().runTask(this, () -> Bukkit.dispatchCommand(getServer().getConsoleSender(), command));
-
-        long endTime = System.nanoTime();
-        long executionTime = endTime - startTime;
-
-        if (executionTime < 1_000_000) {
-            getLogger().info("[ShopMC] Command executed in " + executionTime + " ns: " + command);
-        } else {
-            getLogger().info("[ShopMC] Command executed in " + (executionTime / 1_000_000) + " ms: " + command);
-        }
+    void log(String message){
+        getLogger().info("[ShopMC] " + message);
     }
 }
