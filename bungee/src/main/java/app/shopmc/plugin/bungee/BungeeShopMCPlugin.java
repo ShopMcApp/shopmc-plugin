@@ -19,11 +19,9 @@ import static net.md_5.bungee.config.ConfigurationProvider.getProvider;
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class BungeeShopMCPlugin extends Plugin {
     private Socket socket;
-    private ScheduledTask reconnectTask;
     public static Config config;
+    private ScheduledTask reconnectTask;
     private final ProxyServer proxyServer = ProxyServer.getInstance();
-    private final BungeeShopMCPlugin pluginInstance = this;
-    private final String pluginName = getDescription().getName();
 
     @Override
     public void onEnable() {
@@ -44,7 +42,7 @@ public class BungeeShopMCPlugin extends Plugin {
             config = new Config(new BungeeConfigLoader(getProvider(YamlConfiguration.class).load(configFile)));
         } catch (EmptyConfigFieldException | IOException exception) {
             getLogger().log(Level.SEVERE, exception.getMessage());
-            proxyServer.getPluginManager().unregisterCommands(pluginInstance);
+            proxyServer.getPluginManager().unregisterCommands(this);
             return;
         }
 
@@ -64,7 +62,7 @@ public class BungeeShopMCPlugin extends Plugin {
             @Override
             public void onClose(int code, String reason, boolean remote) {
                 getLogger().warning("Connection closed");
-                reconnectTask = proxyServer.getScheduler().schedule(pluginInstance, () -> {
+                reconnectTask = proxyServer.getScheduler().schedule(BungeeShopMCPlugin.this, () -> {
                     if (!socket.isOpen()) {
                         socket.reconnect();
                     } else {
