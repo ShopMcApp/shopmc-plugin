@@ -4,7 +4,6 @@ import app.shopmc.plugin.config.Config;
 import app.shopmc.plugin.config.EmptyConfigFieldException;
 import app.shopmc.plugin.router.Socket;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.java_websocket.handshake.ServerHandshake;
@@ -18,10 +17,12 @@ public class BukkitShopMCPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        // init config file if not exist
         if (!new File(getDataFolder(), "config.yml").exists()) {
             saveDefaultConfig();
         }
 
+        // check if config is correct
         try {
             config = new Config(new BukkitConfigLoader(this.getConfig()));
         } catch (EmptyConfigFieldException exception) {
