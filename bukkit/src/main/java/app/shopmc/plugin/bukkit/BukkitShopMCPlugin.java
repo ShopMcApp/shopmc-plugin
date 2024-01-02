@@ -38,7 +38,7 @@ public class BukkitShopMCPlugin extends JavaPlugin {
                 @Override
                 public void onCommand(String command) {
                     Bukkit.getScheduler().runTask(BukkitShopMCPlugin.this, () -> Bukkit.dispatchCommand(getServer().getConsoleSender(), command));
-                    getLogger().info("Executed command:" + command);
+                    getLogger().info("Executed command: " + command);
                 }
 
                 @Override

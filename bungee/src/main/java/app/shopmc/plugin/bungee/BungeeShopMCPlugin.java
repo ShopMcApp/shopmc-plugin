@@ -9,15 +9,10 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
 import net.md_5.bungee.config.Configuration;
-import net.md_5.bungee.config.YamlConfiguration;
 import org.java_websocket.handshake.ServerHandshake;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-
-import static net.md_5.bungee.config.ConfigurationProvider.getProvider;
 
 public class BungeeShopMCPlugin extends Plugin {
     private Socket socket;
@@ -54,7 +49,7 @@ public class BungeeShopMCPlugin extends Plugin {
             @Override
             public void onCommand(String command) {
                 proxyServer.getPluginManager().dispatchCommand(proxyServer.getConsole(), command);
-                getLogger().info("Executed command:" + command);
+                getLogger().info("Executed command: " + command);
             }
 
 
