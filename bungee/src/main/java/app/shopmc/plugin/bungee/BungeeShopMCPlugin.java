@@ -2,21 +2,20 @@ package app.shopmc.plugin.bungee;
 
 import app.shopmc.plugin.config.Config;
 import app.shopmc.plugin.config.EmptyConfigFieldException;
+import app.shopmc.plugin.router.Socket;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
-import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class BungeeShopMCPlugin extends Plugin {
-    private WebSocketClient socket;
+    private Socket socket;
     private ScheduledTask reconnectTask;
     public static Config config;
     private final ProxyServer proxyServer = ProxyServer.getInstance();
@@ -45,55 +44,22 @@ public class BungeeShopMCPlugin extends Plugin {
             return;
         }
 
-        String serverURI = "wss://router.shopmc.app/" + config.key;
-        socket = new WebSocketClient(URI.create(serverURI)) {
+        socket = new Socket(config.key) {
             @Override
             public void onOpen(ServerHandshake handshakedata) {
-                getLogger().info("[ShopMC] connection opened");
+                getLogger().info("Connection opened");
             }
 
             @Override
-            public void onMessage(String commands) {
-                long startTime = System.nanoTime();
-
-                getLogger().info("[ShopMC] Received commands: " + commands);
-
-                String[] commandArray = commands.split("\n");
-
-                for (String command : commandArray) {
-                    long commandStartTime = System.nanoTime();
-                    proxyServer.getPluginManager().dispatchCommand(proxyServer.getConsole(), command);
-                    long commandEndTime = System.nanoTime();
-                    long commandExecutionTime = commandEndTime - commandStartTime;
-
-                    logExecutionTime(command, commandExecutionTime);
-                }
-
-                long endTime = System.nanoTime();
-                long totalTime = endTime - startTime;
-
-                logTotalTime(totalTime);
+            public void onCommand(String command) {
+                proxyServer.getPluginManager().dispatchCommand(proxyServer.getConsole(), command);
+                getLogger().info("Executed command:" + command);
             }
 
-            private void logExecutionTime(String command, long executionTime) {
-                if (executionTime < 1_000_000) {
-                    getLogger().info("[ShopMC] Command executed in " + executionTime + " ns: " + command);
-                } else {
-                    getLogger().info("[ShopMC] Command executed in " + (executionTime / 1_000_000) + " ms: " + command);
-                }
-            }
-
-            private void logTotalTime(long totalTime) {
-                if (totalTime < 1_000_000) {
-                    getLogger().info("[ShopMC] All commands executed in " + totalTime + " ns");
-                } else {
-                    getLogger().info("[ShopMC] All commands executed in " + (totalTime / 1_000_000) + " ms");
-                }
-            }
 
             @Override
             public void onClose(int code, String reason, boolean remote) {
-                getLogger().warning("[ShopMC] connection closed");
+                getLogger().warning("Connection closed");
                 reconnectTask = proxyServer.getScheduler().schedule(pluginInstance, () -> {
                     if (!socket.isOpen()) {
                         socket.reconnect();

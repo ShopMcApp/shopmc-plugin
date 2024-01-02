@@ -6,6 +6,7 @@ import app.shopmc.plugin.router.Socket;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.java_websocket.handshake.ServerHandshake;
 
 import java.io.File;
@@ -14,6 +15,7 @@ import java.util.logging.Level;
 public class BukkitShopMCPlugin extends JavaPlugin {
     private Socket socket;
     private Config config;
+    private BukkitTask reconnectTask;
 
     @Override
     public void onEnable() {
@@ -35,18 +37,8 @@ public class BukkitShopMCPlugin extends JavaPlugin {
             socket = new Socket(config.key) {
                 @Override
                 public void onCommand(String command) {
-                    long startTime = System.nanoTime();
-
                     Bukkit.getScheduler().runTask(BukkitShopMCPlugin.this, () -> Bukkit.dispatchCommand(getServer().getConsoleSender(), command));
-
-                    long endTime = System.nanoTime();
-                    long executionTime = endTime - startTime;
-
-                    if (executionTime < 1_000_000) {
-                        getLogger().info("Command executed in " + executionTime + " ns: " + command);
-                    } else {
-                        getLogger().info("Command executed in " + (executionTime / 1_000_000) + " ms: " + command);
-                    }
+                    getLogger().info("Executed command:" + command);
                 }
 
                 @Override
@@ -56,8 +48,8 @@ public class BukkitShopMCPlugin extends JavaPlugin {
 
                 @Override
                 public void onClose(int code, String reason, boolean remote) {
-                    getLogger().info("Connection closed");
-                    new BukkitRunnable() {
+                    getLogger().warning("Connection closed");
+                    reconnectTask = new BukkitRunnable() {
                         @Override
                         public void run() {
                             if (!socket.isOpen()) {
@@ -84,6 +76,10 @@ public class BukkitShopMCPlugin extends JavaPlugin {
     public void onDisable() {
         if (socket != null) {
             socket.close();
+        }
+
+        if (reconnectTask != null) {
+            reconnectTask.cancel();
         }
     }
 }
