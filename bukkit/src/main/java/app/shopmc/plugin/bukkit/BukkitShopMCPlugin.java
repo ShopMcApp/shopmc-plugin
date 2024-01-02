@@ -26,7 +26,7 @@ public class BukkitShopMCPlugin extends JavaPlugin {
         try {
             config = new Config(new BukkitConfigLoader(this.getConfig()));
         } catch (EmptyConfigFieldException exception) {
-            getLogger().severe(String.format("[%s] %s", getDescription().getName(), exception.getMessage()));
+            getLogger().severe(exception.getMessage());
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
@@ -43,20 +43,20 @@ public class BukkitShopMCPlugin extends JavaPlugin {
                     long executionTime = endTime - startTime;
 
                     if (executionTime < 1_000_000) {
-                        log("Command executed in " + executionTime + " ns: " + command);
+                        getLogger().info("Command executed in " + executionTime + " ns: " + command);
                     } else {
-                        log("Command executed in " + (executionTime / 1_000_000) + " ms: " + command);
+                        getLogger().info("Command executed in " + (executionTime / 1_000_000) + " ms: " + command);
                     }
                 }
 
                 @Override
                 public void onOpen(ServerHandshake serverHandshake) {
-                    log("Connection opened");
+                    getLogger().info("Connection opened");
                 }
 
                 @Override
                 public void onClose(int code, String reason, boolean remote) {
-                    log("Connection closed");
+                    getLogger().info("Connection closed");
                     new BukkitRunnable() {
                         @Override
                         public void run() {
@@ -85,9 +85,5 @@ public class BukkitShopMCPlugin extends JavaPlugin {
         if (socket != null) {
             socket.close();
         }
-    }
-
-    void log(String message){
-        getLogger().info("[ShopMC] " + message);
     }
 }
