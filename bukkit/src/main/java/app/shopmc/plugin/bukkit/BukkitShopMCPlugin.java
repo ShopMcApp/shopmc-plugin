@@ -2,6 +2,7 @@ package app.shopmc.plugin.bukkit;
 
 import app.shopmc.plugin.config.Config;
 import app.shopmc.plugin.config.EmptyConfigFieldException;
+import app.shopmc.plugin.router.Socket;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -14,7 +15,7 @@ import java.net.URI;
 import java.util.logging.Level;
 
 public class BukkitShopMCPlugin extends JavaPlugin {
-    private WebSocketClient socket;
+    private Socket socket;
     public static Config config;
 
     @Override
@@ -32,21 +33,16 @@ public class BukkitShopMCPlugin extends JavaPlugin {
         }
 
         Thread networkThread = new Thread(() -> {
-            String serverURI = "wss://router.shopmc.app/" + config.key;
-            socket = new WebSocketClient(URI.create(serverURI)) {
+            socket = new Socket(config.key) {
                 @Override
-                public void onOpen(ServerHandshake handshakedata) {
-                    Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[ShopMC] connection opened");
+                public void onCommand(String command) {
+                    logCommandExecutionTime(command);
+                    Bukkit.getScheduler().runTask(BukkitShopMCPlugin.this, () -> Bukkit.dispatchCommand(getServer().getConsoleSender(), command));
                 }
 
                 @Override
-                public void onMessage(String commands) {
-                    Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[ShopMC] Received commands: " + ChatColor.RESET + commands);
-                    for (String command : commands.split("\n")) {
-                        logCommandExecutionTime(command);
-                        Bukkit.getScheduler().runTask(BukkitShopMCPlugin.this, () ->
-                                Bukkit.dispatchCommand(getServer().getConsoleSender(), command));
-                    }
+                public void onOpen(ServerHandshake serverHandshake) {
+                    Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[ShopMC] connection opened");
                 }
 
                 @Override
