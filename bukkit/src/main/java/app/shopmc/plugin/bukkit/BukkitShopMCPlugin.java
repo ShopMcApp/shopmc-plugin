@@ -37,7 +37,6 @@ public class BukkitShopMCPlugin extends JavaPlugin {
                 @Override
                 public void onCommand(String command) {
                     logCommandExecutionTime(command);
-                    Bukkit.getScheduler().runTask(BukkitShopMCPlugin.this, () -> Bukkit.dispatchCommand(getServer().getConsoleSender(), command));
                 }
 
                 @Override
@@ -81,7 +80,7 @@ public class BukkitShopMCPlugin extends JavaPlugin {
     private void logCommandExecutionTime(String command) {
         long startTime = System.nanoTime();
 
-        // Execute the command here
+        Bukkit.getScheduler().runTask(this, () -> Bukkit.dispatchCommand(getServer().getConsoleSender(), command));
 
         long endTime = System.nanoTime();
         long executionTime = endTime - startTime;
