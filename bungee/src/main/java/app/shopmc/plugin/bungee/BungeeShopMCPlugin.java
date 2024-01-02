@@ -6,12 +6,15 @@ import app.shopmc.plugin.router.Socket;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
+import net.md_5.bungee.config.YamlConfiguration;
 import org.java_websocket.handshake.ServerHandshake;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
+
+import static net.md_5.bungee.config.ConfigurationProvider.getProvider;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class BungeeShopMCPlugin extends Plugin {
@@ -24,9 +27,9 @@ public class BungeeShopMCPlugin extends Plugin {
 
     @Override
     public void onEnable() {
+        // init config file
         File dataFolder = getDataFolder();
         dataFolder.mkdirs();
-
         File configFile = new File(dataFolder, "config.yml");
         if (!configFile.exists()) {
             try {
@@ -36,10 +39,11 @@ public class BungeeShopMCPlugin extends Plugin {
             }
         }
 
+        // check if config is correct
         try {
-            config = new Config(new BungeeConfigLoader(net.md_5.bungee.config.ConfigurationProvider.getProvider(net.md_5.bungee.config.YamlConfiguration.class).load(configFile)));
+            config = new Config(new BungeeConfigLoader(getProvider(YamlConfiguration.class).load(configFile)));
         } catch (EmptyConfigFieldException | IOException exception) {
-            getLogger().log(Level.SEVERE, String.format("[%s] %s", pluginName, exception.getMessage()));
+            getLogger().log(Level.SEVERE, exception.getMessage());
             proxyServer.getPluginManager().unregisterCommands(pluginInstance);
             return;
         }

@@ -19,7 +19,7 @@ public class BukkitShopMCPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        // init config file if not exist
+        // init config file
         if (!new File(getDataFolder(), "config.yml").exists()) {
             saveDefaultConfig();
         }
