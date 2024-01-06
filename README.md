@@ -1,6 +1,6 @@
 # ShopMC Plugin
 
-Introducing the ShopMC Plugin, a dynamic integration that links your Minecraft server to a meticulously crafted itemshop on [ShopMC](https://shopmc.com/).
+Minecraft plugin for ShopMC
 
 ## Compatibility
 
