@@ -5,7 +5,6 @@ import app.shopmc.plugin.config.EmptyConfigFieldException;
 import app.shopmc.plugin.router.Socket;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.java_websocket.handshake.ServerHandshake;
 
@@ -19,12 +18,10 @@ public class BukkitShopMCPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        // init config file
         if (!new File(getDataFolder(), "config.yml").exists()) {
             saveDefaultConfig();
         }
 
-        // check if config is correct
         try {
             config = new Config(new BukkitConfigLoader(this.getConfig()));
         } catch (EmptyConfigFieldException exception) {
@@ -33,11 +30,12 @@ public class BukkitShopMCPlugin extends JavaPlugin {
             return;
         }
 
-        Thread networkThread = new Thread(() -> {
+        Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
             socket = new Socket(config.key) {
                 @Override
                 public void onCommand(String command) {
-                    Bukkit.getScheduler().runTask(BukkitShopMCPlugin.this, () -> Bukkit.dispatchCommand(getServer().getConsoleSender(), command));
+                    Bukkit.getScheduler().runTask(BukkitShopMCPlugin.this, () ->
+                            Bukkit.dispatchCommand(getServer().getConsoleSender(), command));
                     getLogger().info("Executed command: " + command);
                 }
 
@@ -49,16 +47,13 @@ public class BukkitShopMCPlugin extends JavaPlugin {
                 @Override
                 public void onClose(int code, String reason, boolean remote) {
                     getLogger().warning("Connection closed");
-                    reconnectTask = new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            if (!socket.isOpen()) {
-                                socket.reconnect();
-                            } else {
-                                cancel();
-                            }
+                    reconnectTask = Bukkit.getScheduler().runTaskTimerAsynchronously(BukkitShopMCPlugin.this, () -> {
+                        if (!socket.isOpen()) {
+                            socket.reconnect();
+                        } else {
+                            reconnectTask.cancel();
                         }
-                    }.runTaskLater(BukkitShopMCPlugin.this, 200);
+                    }, 0, 200L);
                 }
 
                 @Override
@@ -69,7 +64,6 @@ public class BukkitShopMCPlugin extends JavaPlugin {
             socket.connect();
             socket.setConnectionLostTimeout(0);
         });
-        networkThread.start();
     }
 
     @Override

@@ -5,11 +5,11 @@ public class Config {
 
     public Config(final ConfigLoader loader) throws EmptyConfigFieldException {
         this.key = loader.getString("key");
-        this.checkValues();
+        checkValues();
     }
 
     private void checkValues() throws EmptyConfigFieldException {
-        if (this.key == null || this.key.isEmpty()) {
+        if (key == null || key.isEmpty()) {
             throw new EmptyConfigFieldException("key");
         }
     }

@@ -26,7 +26,7 @@ public class BungeeShopMCPlugin extends Plugin {
         final ResourceLoader<Configuration> resourceLoader = new BungeeResourceLoader(this.getClass(), this.getDataFolder());
         try {
             if (resourceLoader.saveDefault("config.yml")) {
-                this.getLogger().info("Default file config.yml has been saved, configure it and restart proxy");
+                getLogger().info("Default file config.yml has been saved, configure it and restart proxy");
                 return;
             }
 
@@ -34,10 +34,12 @@ public class BungeeShopMCPlugin extends Plugin {
                 final Configuration cfgFile = resourceLoader.load("config.yml");
                 config = new Config(new BungeeConfigLoader(cfgFile));
             } catch (final EmptyConfigFieldException exception) {
-                this.getLogger().severe(exception.getMessage());
+                getLogger().severe(exception.getMessage());
+                return; // Stop further execution if config is not valid
             }
         } catch (final ResourceLoaderException exception) {
-            this.getLogger().severe("Reason: " + exception.getCause().getMessage());
+            getLogger().severe("Reason: " + exception.getCause().getMessage());
+            return; // Stop further execution if resource loading fails
         }
 
         socket = new Socket(config.key) {
@@ -51,7 +53,6 @@ public class BungeeShopMCPlugin extends Plugin {
                 proxyServer.getPluginManager().dispatchCommand(proxyServer.getConsole(), command);
                 getLogger().info("Executed command: " + command);
             }
-
 
             @Override
             public void onClose(int code, String reason, boolean remote) {

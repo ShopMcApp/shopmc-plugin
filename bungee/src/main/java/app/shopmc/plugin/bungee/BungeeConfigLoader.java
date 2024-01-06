@@ -13,11 +13,11 @@ public class BungeeConfigLoader implements ConfigLoader {
 
     @Override
     public boolean getBoolean(final String key) {
-        return this.configFile.getBoolean(key);
+        return configFile.getBoolean(key);
     }
 
     @Override
     public String getString(final String key) {
-        return this.configFile.getString(key);
+        return configFile.getString(key);
     }
 }
